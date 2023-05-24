@@ -15,19 +15,30 @@
     </header>
     <main id="main">
       <div class="photograph-header">
-        <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
+        <button class="contact_button">Contactez-moi</button>
       </div>
     </main>
     <div id="contact_modal">
 			<div class="modal">
 				<header>
           <h2>Contactez-moi</h2>
-          <img src="assets/icons/close.svg" onclick="closeModal()" />
+          <p class="photographer_name"></p>
+          <img class="close_button" src="assets/icons/close.svg" onclick="closeModal()" />
         </header>
 				<form>
 					<div>
-						<label>Prénom</label>
-						<input />
+						<label for="first">Prénom</label>
+						<input id="first" type="text" required aria-required="true"/>
+
+            <label for="last">Nom</label>
+						<input id="last" type="text" required aria-required="true"/>
+
+            <label for="email">Email</label>
+						<input id="email" type="email" required aria-required="true"/>
+
+            <label for="message">Votre message</label>
+						<textarea id="message" rows="4" required aria-required="true">
+            </textarea>
 					</div>
           <button class="contact_button">Envoyer</button>
 				</form>

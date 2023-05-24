@@ -5,7 +5,7 @@
         const data = await response.json();
         const photographers = data.photographers;
         return photographers;
-    }
+    };
 
     async function displayData(photographers) {
         const photographersSection = document.querySelector(".photographer_section");
