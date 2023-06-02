@@ -1,3 +1,8 @@
+*{
+    font-family: DM Sans;
+}
+
+
 #contact_modal {
     display: none;
 }
@@ -61,7 +66,7 @@
 }
 
 .modal {
-    width: 30em;
+    width: 35em;
     border-radius: 5px;
     background-color: #DB8876;
     display: flex;
@@ -102,13 +107,18 @@ header{
 }
 
 .modal header h2 {
-    font-size: 3em;
+    top: 30px;
+    font-size: 4em;
     line-height: 50px;
     margin: 0;
+    position: absolute;
 }
 
 .close_button{
     margin: 0;
+    position: absolute;
+    top: 30px;
+    right: 30px;
 }
 
 .name_contact{
@@ -118,8 +128,8 @@ header{
 }
 
 .photographer_name{
-    font-size: 3em;
-    margin: 0;
+    font-size: 4em;
+    margin-top: 100px;
 }
 
 dialog{
@@ -136,6 +146,7 @@ form {
 form label {
     color: #312E2E;
     font-size: 36px;
+    padding-top: 10px;
 }
 
 form div {
@@ -151,4 +162,16 @@ form input {
     height: 68px;
     border: none;
     border-radius: 5px;
+    font-size: 16px;
+}
+
+
+textarea {
+    width: 100%;
+    height: 12em;
+    font-size: 16px;
+    text-align: start;
+    border-radius: 5px;
+    border: none;
+    resize: none;
 }

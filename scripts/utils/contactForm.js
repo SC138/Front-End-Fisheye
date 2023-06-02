@@ -14,6 +14,7 @@ function closeModal() {
     contact_modal.style.display = "none";
 }
 
+
 // variable isSubmited sur false
 let isSubmited = false;
 
@@ -60,3 +61,4 @@ contact_button.addEventListener("click", displayModal);
 // Ajout d'un écouteur d'événement au clic sur le bouton "fermer"
 // lorsque l'événement se produit, la fonction closeModal est appelée
 close_button.addEventListener("click", closeModal);
+
