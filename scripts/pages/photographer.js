@@ -1,3 +1,5 @@
+import {mediaFactory} from "../factories/mediaFactory.js";
+
 async function dataPhotographers(file){
     // la const response, elle attend le chargement du fichier
     const response = await fetch (file);
@@ -57,6 +59,21 @@ function headerPhotographer(photographer){
     photographHeader.appendChild(catchline);
 };
 
+function displayMedia(allMedias){
+    const mediaSection = document.querySelector("#media-photographer");
+
+    allMedias.forEach((media) => {
+        const mediaModel = mediaFactory(media);
+        const photosUserDOM = mediaModel.photosUserDOM();
+        mediaSection.appendChild(photosUserDOM);
+    });
+}
+
+function findMedia(photographerID, medias){
+    const mediasPhotographer = medias.filter(media => media.photographerId === photographerID);
+    return mediasPhotographer;
+};
+
 
 
 // création d'une fonction init pour initialiser la page web
@@ -69,8 +86,8 @@ async function init(){
     //la const data attend la fonction dataPhotographers avec le chemin d'accès au fichier associé
     const data = await dataPhotographers("../../data/photographers.json");
     //je définie que {photographers} stock data
-    const {photographers} = data;
-
+    const {photographers, media} = data;
+    
     // la const urlParams va chercher dans l'url les paramètres
     // je déclare une nouvelle instance (NEW) d'url search params pour récupérer les paramètres de l'url
     // window = la page web - location = url - search = va être définit par un attribut GET
@@ -90,6 +107,9 @@ async function init(){
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
+    
+    const medias = findMedia(photographerID, media);
+    displayMedia(medias);
 };
 
 
