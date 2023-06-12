@@ -8,9 +8,29 @@ function mediaFactory(media) {
 
         const article = document.createElement('article');
         article.classList.add('picsPhotographer');
+
+
+        // const mediaPhotographer = document.querySelector('.media-likes-containers');
+        // mediaPhotographer.appendChild(article); 
+
         const link = document.createElement('a');
         article.appendChild(link);
+    
 
+        const mediaContainer = document.createElement('div');
+        mediaContainer.classList.add('media-likes-container');
+
+        const pMedia = document.createElement('p');
+        pMedia.classList.add('pMedia');
+        pMedia.textContent = title;
+
+        const pLikes = document.createElement('p');
+        pLikes.classList.add('pLikes');
+        pLikes.innerHTML = `${likes} <i class="fa-solid fa-heart"></i>`;
+
+        article.appendChild(mediaContainer);           
+        mediaContainer.appendChild(pMedia);
+        mediaContainer.appendChild(pLikes);
 
         //ces conditions permettent de vérifier si le média est une image ou une vidéo
         if(image){
@@ -23,17 +43,7 @@ function mediaFactory(media) {
             img.setAttribute("src", mediaImage);
             img.setAttribute("alt", `Photo prise par ${id}`);
 
-            const pMedia = document.createElement('p');
-            pMedia.classList.add('pMedia');
-            pMedia.textContent = title;
-
-            const pLikes = document.createElement('p');
-            pLikes.classList.add('pLikes');
-            pLikes.innerHTML = `${likes} <i class="fa-solid fa-heart"></i>`;
-
             link.appendChild(img);
-            article.appendChild(pMedia);
-            article.appendChild(pLikes);
 
         }else if(video){
             link.setAttribute('href',mediaVideo);
@@ -43,13 +53,7 @@ function mediaFactory(media) {
             movie.setAttribute("src", mediaVideo);
             movie.setAttribute("aria-label", `Vidéo prise par ${id}`);
 
-            const pMedia = document.createElement('p');
-            pMedia.classList.add('pMedia');
-            pMedia.textContent = title;
-
-            const pLikes = document.createElement('p');
-            pLikes.classList.add('pLikes');
-            pLikes.innerHTML = `${likes} <i class="fa-solid fa-heart"></i>`;
+            
 
             // controls permet d'afficher les controles sur la vidéo: play, pause... true pour afficher et false pour masquer
             movie.setAttribute("controls", true);
@@ -60,8 +64,7 @@ function mediaFactory(media) {
             movie.setAttribute("poster", "");
 
             link.appendChild(movie);
-            article.appendChild(pMedia);
-            article.appendChild(pLikes);
+
         }
         return article;
     }
