@@ -74,6 +74,41 @@ function findMedia(photographerID, medias){
     return mediasPhotographer;
 };
 
+// je créer la function createLightbox
+function createLightbox(){
+    // création d'un élement HTML dialog. L'élément HTML <dialog> représente une boite de dialogue ou un composant interactif.
+    const lightbox = document.createElement('dialog');
+    // création d'une div pour afficher le contenu de la lightbox
+    const lightboxContent =  document.createElement('div');
+    // création d'une div pour afficher le média dans la lightbox
+    const mediaLightbox = document.createElement('div');
+    // bouton pour passer au média précédent
+    const previous = document.createElement('button');
+    // bouton pour passer au média suivant
+    const next = document.createElement('button');
+    // bouton de fermeture qui appel la function createCloseButton
+    const closeButton = createCloseButton();
+
+    // Ajout des class et attrubuts aux éléments HTML
+    lightbox.classList.add('lightbox');
+    lightbox.setAttribute('aria-label', 'Fermeture du média');
+    lightboxContent.classList.add('lightbobxContent');
+    mediaLightbox.classList.add('mediaLightbox');
+    previous.classList.add('previous','fas', 'fa-angle-left');
+    previous.setAttribute('arial-label', 'Media précédent');
+    next.classList.add('next','fas', 'fa-angle-right');
+    next.setAttribute('arial-label', 'Media suivant');
+
+    // ajout des éléments à la lightbox
+    lightboxContent.appendChild(closeButton);
+    lightbox.appendChild(lightboxContent);
+    lightboxContent.appendChild(mediaLightbox);
+    lightboxContent.appendChild(previous);
+    lightboxContent.appendChild(next);
+
+    // ajout de la lightbox dans le body
+    document.body.appendChild(lightbox);
+}
 
 
 // création d'une fonction init pour initialiser la page web

@@ -47,7 +47,7 @@ function photographerFactory(data) {
         pricing.textContent = `${price}€/jour`;
 
 
-        // ajou t des éléments à la carte du photographe
+        // ajout des éléments à la carte du photographe
         link.appendChild(img);
         link.appendChild(h2);
         article.appendChild(link);
