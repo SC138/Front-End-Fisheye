@@ -108,7 +108,37 @@ function createLightbox(){
 
     // ajout de la lightbox dans le body
     document.body.appendChild(lightbox);
+
+    // au clic sur previous, clickArrow est décrémenté de 1 avec --
+    previous.addEventListener('click', () => {
+        clickArrow--;
+        // si clickArrow devient inférieur à 0
+        // si oui, je dis que clickArrow doit pointer vers le dernier élément de mediaPhotographer
+        if (clickArrow < 0) {
+            // pour ce faire j'attribut à clickArrow la valeur de mediaPhotographer.length - 1
+            clickArrow = mediaPhotographer.length - 1;
+        }
+        // j'appel la function updateLightbox avec le paramètre clickArrow pour mettre à jour la lightbox
+        updateLightbox(clickArrow);
+    });
+    
+    // au clic sur next, clickArrow est incrémenté de 1 avec ++
+    next.addEventListener('click', () => {
+        clickArrow++;
+        // si clickArrow est supérieur ou égal à mediaPhotographer
+        // si oui, je dis que clickArrow doit pointer vers le premier élément
+        if (clickArrow >= mediaPhotographer.length) {
+            // et j'attribut la valeur à 0
+            clickArrow = 0;
+        }
+        // j'appel la function updateLightbox avec le paramètre clickArrow pour mettre à jour la lightbox
+        updateLightbox(clickArrow);
+    });
 }
+
+let clickArrow = 0;
+
+
 
 
 // création d'une fonction init pour initialiser la page web
