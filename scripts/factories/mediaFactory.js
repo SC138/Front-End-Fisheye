@@ -1,29 +1,37 @@
 function mediaFactory(media) {
     const {id, photographerId, title, image, video, likes, date, price} = media;
-
     const mediaImage = `assets/images/photos/${photographerId}/${image}`;
     const mediaVideo = `assets/images/photos/${photographerId}/${video}`;
 
-    function photosUserDOM(){
+
+    function photosUserDOM(openLightbox = false){
 
         const article = document.createElement('article');
-        article.classList.add('picsPhotographer');
-
-
-        // const mediaPhotographer = document.querySelector('.media-likes-containers');
-        // mediaPhotographer.appendChild(article); 
+        
 
         const link = document.createElement('a');
         article.appendChild(link);
-    
+        
+        if(openLightbox){
+            article.classList.add('lightboxArticle');
+
+        }else{
+            article.classList.add('picsPhotographer');
+        }
 
         const mediaContainer = document.createElement('div');
         mediaContainer.classList.add('media-likes-container');
 
         const pMedia = document.createElement('p');
-        pMedia.classList.add('pMedia');
+        if(openLightbox){
+            pMedia.classList.add('pMediaLightbox');
+        }else{
+            pMedia.classList.add('pMedia');
+        }
+        
         pMedia.textContent = title;
 
+        
         const pLikes = document.createElement('p');
         pLikes.classList.add('pLikes');
         pLikes.innerHTML = `${likes} <i class="fa-solid fa-heart"></i>`;
@@ -41,9 +49,16 @@ function mediaFactory(media) {
 
             const img = document.createElement('img');      
             img.setAttribute("src", mediaImage);
-            img.setAttribute("alt", `Photo prise par ${id}`);
+            img.setAttribute("alt", `${title}`);
+
+            if(openLightbox){ 
+                img.classList.add('openImg');
+            }else{
+                img.classList.add('img');
+            }
 
             link.appendChild(img);
+
 
         }else if(video){
             link.setAttribute('href',mediaVideo);
@@ -51,17 +66,20 @@ function mediaFactory(media) {
             
             const movie = document.createElement('video');      
             movie.setAttribute("src", mediaVideo);
-            movie.setAttribute("aria-label", `Vidéo prise par ${id}`);
-
+            movie.setAttribute("aria-label", `${title}`);
             
-
-            // controls permet d'afficher les controles sur la vidéo: play, pause... true pour afficher et false pour masquer
-            movie.setAttribute("controls", true);
-            // autoplay lance automatiquement la video si c'est sur true
-            // par défaut le autoplay est sur false
-            movie.autoplay=false;
-            // poster permet d'afficher une miniature de la première image de la vidéo
-            movie.setAttribute("poster", "");
+            if(openLightbox){ 
+                movie.classList.add('openVideo');
+                // controls permet d'afficher les controles sur la vidéo: play, pause... true pour afficher et false pour masquer
+                movie.setAttribute("controls", true);
+            }else{
+                movie.classList.add('video');
+                // autoplay lance automatiquement la video si c'est sur true
+                // par défaut le autoplay est sur false
+                movie.autoplay=false;
+                // poster permet d'afficher une miniature de la première image de la vidéo
+                movie.setAttribute("poster", "");
+            }
 
             link.appendChild(movie);
 

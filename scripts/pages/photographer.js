@@ -89,7 +89,7 @@ function createLightbox(){
     // bouton de fermeture qui appel la function createCloseButton
     const closeButton = createCloseButton();
 
-    // Ajout des class et attrubuts aux éléments HTML
+    // Ajout des class et attributs aux éléments HTML
     lightbox.classList.add('lightbox');
     lightbox.setAttribute('aria-label', 'Fermeture du média');
     lightboxContent.classList.add('lightbobxContent');
@@ -100,14 +100,16 @@ function createLightbox(){
     next.setAttribute('arial-label', 'Media suivant');
 
     // ajout des éléments à la lightbox
-    lightboxContent.appendChild(closeButton);
     lightbox.appendChild(lightboxContent);
+    lightboxContent.appendChild(closeButton);
     lightboxContent.appendChild(mediaLightbox);
     lightboxContent.appendChild(previous);
     lightboxContent.appendChild(next);
 
     // ajout de la lightbox dans le body
-    document.body.appendChild(lightbox);
+    const body = document.querySelector('body');
+    body.appendChild(lightbox);
+    
 
     // au clic sur previous, clickArrow est décrémenté de 1 avec --
     previous.addEventListener('click', () => {
@@ -135,8 +137,51 @@ function createLightbox(){
         updateLightbox(clickArrow);
     });
 }
-
+// Je déclare une variable "clickArrow" qui est égale à 0 pour l'initialiser
 let clickArrow = 0;
+
+function updateLightbox(clickArrow){
+    const mediaClick = mediaPhotographer[clickArrow];
+    createLightbox(mediaClick);
+}
+
+// je déclare une variable mediaPhotographer en tant que tableau
+let mediaPhotographer = [];
+
+//function openLightbox prend en paramètre event
+function openLightbox(event){
+    // cible la classe mediaArticle dans mediaFactory
+    const clickMedia = event.target.closest('mediaArticle');
+    // trouve l'indice (la position) d'un élément dans mediaPhotographer basé sur la valeur de son attribut id à partir de clickMedia
+    clickArrow = mediaPhotographer.findIndex(media => media.id === +clickMedia.getAttribute('data-id'));
+
+    // je sélectionne la Lightbox à l'aide de la classe 'lightbox'
+    const lightbox = document.querySelector('.lightbox');
+
+    // Mise à jour la Lightbox en utilisant l'indice du média
+    updateLightbox(clickArrow);
+    // ouverture de la lightbox avec showModal
+    lightbox.showModal();
+}
+
+function createCloseButton(){
+    // création du bouton de fermeture
+    const closeButton = document.createElement('buton');
+    // Ajout des classes et des attributs au bouton de fermeture de la Lightbox
+    closeButton.classList.add('lbCloseButton', "fas", "fa-times");
+    closeButton.setAttribute('aria-label', 'Fermeture du média');
+
+    // écoputeur d'évenement au click sur le bouton de fermeture
+    closeButton.addEventListener('click', () => {
+        // je sélectionne la Lightbox à l'aide de la classe 'lightbox'
+        const lightbox = document.querySelector('.lightbox');
+        //fermeture de la lightbox
+        lightbox.close();
+    });
+    // je retourne le bouton de fermeture de lightbox
+    return closeButton;
+}
+
 
 
 
@@ -152,7 +197,15 @@ async function init(){
     const data = await dataPhotographers("../../data/photographers.json");
     //je définie que {photographers} stock data
     const {photographers, media} = data;
+
+
+
+    // j'instancie la function createLightbox
+    createLightbox();
+    openLightbox();
     
+
+
     // la const urlParams va chercher dans l'url les paramètres
     // je déclare une nouvelle instance (NEW) d'url search params pour récupérer les paramètres de l'url
     // window = la page web - location = url - search = va être définit par un attribut GET
