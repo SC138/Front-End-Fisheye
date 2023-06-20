@@ -10,6 +10,7 @@ function mediaFactory(media) {
         
 
         const link = document.createElement('a');
+        link.classList.add('mediaArticle');
         article.appendChild(link);
         
         if(openLightbox){
