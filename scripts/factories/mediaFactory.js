@@ -4,31 +4,33 @@ function mediaFactory(media) {
     const mediaVideo = `assets/images/photos/${photographerId}/${video}`;
 
 
-    function photosUserDOM(openLightbox = false){
+    function photosUserDOM(){
 
         const article = document.createElement('article');
         
 
         const link = document.createElement('a');
         link.classList.add('mediaArticle');
+        article.classList.add('picsPhotographer');
         article.appendChild(link);
         
-        if(openLightbox){
-            article.classList.add('lightboxArticle');
+        // if(openLightbox){
+        //     article.classList.add('lightboxArticle');
 
-        }else{
-            article.classList.add('picsPhotographer');
-        }
+        // }else{
+        //     article.classList.add('picsPhotographer');
+        // }
 
         const mediaContainer = document.createElement('div');
         mediaContainer.classList.add('media-likes-container');
 
         const pMedia = document.createElement('p');
-        if(openLightbox){
-            pMedia.classList.add('pMediaLightbox');
-        }else{
-            pMedia.classList.add('pMedia');
-        }
+        pMedia.classList.add('pMedia');
+        // if(openLightbox){
+        //     pMedia.classList.add('pMediaLightbox');
+        // }else{
+        //     pMedia.classList.add('pMedia');
+        // }
         
         pMedia.textContent = title;
 
@@ -52,11 +54,11 @@ function mediaFactory(media) {
             img.setAttribute("src", mediaImage);
             img.setAttribute("alt", `${title}`);
 
-            if(openLightbox){ 
-                img.classList.add('openImg');
-            }else{
-                img.classList.add('img');
-            }
+            // if(openLightbox){ 
+            //     img.classList.add('openImg');
+            // }else{
+            //     img.classList.add('img');
+            // }
 
             link.appendChild(img);
 
@@ -69,18 +71,18 @@ function mediaFactory(media) {
             movie.setAttribute("src", mediaVideo);
             movie.setAttribute("aria-label", `${title}`);
             
-            if(openLightbox){ 
-                movie.classList.add('openVideo');
-                // controls permet d'afficher les controles sur la vidéo: play, pause... true pour afficher et false pour masquer
-                movie.setAttribute("controls", true);
-            }else{
-                movie.classList.add('video');
-                // autoplay lance automatiquement la video si c'est sur true
-                // par défaut le autoplay est sur false
-                movie.autoplay=false;
-                // poster permet d'afficher une miniature de la première image de la vidéo
-                movie.setAttribute("poster", "");
-            }
+            // if(openLightbox){ 
+            //     movie.classList.add('openVideo');
+            //     // controls permet d'afficher les controles sur la vidéo: play, pause... true pour afficher et false pour masquer
+            //     movie.setAttribute("controls", true);
+            // }else{
+            //     movie.classList.add('video');
+            //     // autoplay lance automatiquement la video si c'est sur true
+            //     // par défaut le autoplay est sur false
+            //     movie.autoplay=false;
+            //     // poster permet d'afficher une miniature de la première image de la vidéo
+            //     movie.setAttribute("poster", "");
+            // }
 
             link.appendChild(movie);
 
