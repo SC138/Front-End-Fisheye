@@ -3,8 +3,8 @@ import {mediaFactory} from "../factories/mediaFactory.js";
 async function dataPhotographers(file){
     // la const response, elle attend le chargement du fichier
     const response = await fetch (file);
-    const data = await response.json();
-    return data;
+    const datas = await response.json();
+    return datas;
 };
 
 // je créer la function findPhotographer avec les paramètres : photographers, id
@@ -59,19 +59,7 @@ function headerPhotographer(photographer){
     photographHeader.appendChild(catchline);
 };
 
-// function clickMedia(selectMedia){
-//     const linkMedia = document.querySelectorAll('.mediaArticle');
-//     if(linkMedia){
-//         linkMedia.forEach((link) =>{
-//             selectMedia = link;
-//             link.addEventListener('click', (e)=>{
-//                 e.preventDefault();
-//                 openLightbox();
-//             });
 
-//         });
-//     }
-// }
 
 // function displayMedia avec le parametre mediaPhotographer sert à boucler sur chaque media
 // correspondant à l'id du photographe
@@ -91,189 +79,47 @@ function findMedia(photographerID, medias){
     return mediasPhotographer;
 };
 
-// // je créer la function createLightbox
-// function createLightbox(){
-//     // création d'un élement HTML dialog. L'élément HTML <dialog> représente une boite de dialogue ou un composant interactif.
-//     const lightbox = document.createElement('dialog');
-//     // création d'une div pour afficher le contenu de la lightbox
-//     const lightboxContent =  document.createElement('div');
-//     // création d'une div pour afficher le média dans la lightbox
-//     const mediaLightbox = document.createElement('div');
-//     // bouton pour passer au média précédent
-//     const previous = document.createElement('button');
-//     // bouton pour passer au média suivant
-//     const next = document.createElement('button');
-//     // bouton de fermeture qui appel la function createCloseButton
-//     const closeButton = createCloseButton();
+function createLightbox(){
+    const body = document.querySelector('body');
+    const lightbox = document.createElement('dialog');
+    const lightboxContenu = document.createElement('div');
+    const mediaLightbox = document.createElement('div');
+    const prev = document.createElement('button');
+    const next = document.createElement('button');
+    const closeLb = document.createElement('span');
 
-//     // Ajout des class et attributs aux éléments HTML
-//     lightbox.classList.add('lightbox');
-//     lightbox.setAttribute('aria-label', 'Fermeture du média');
-//     lightboxContent.classList.add('lightbobxContent');
-//     mediaLightbox.classList.add('mediaLightbox');
-//     previous.classList.add('previous','fas', 'fa-angle-left');
-//     previous.setAttribute('arial-label', 'Media précédent');
-//     next.classList.add('next','fas', 'fa-angle-right');
-//     next.setAttribute('arial-label', 'Media suivant');
+    lightbox.classList.add('lightbox');
+    lightboxContenu.classList.add('lightboxContenu');
+    mediaLightbox.classList.add('mediaLightbox');
+    prev.classList.add('prev');
+    next.classList.add('next');
+    closeLb.classList.add('closeLb');
 
-//     // ajout des éléments à la lightbox
-//     lightbox.appendChild(lightboxContent);
-//     lightboxContent.appendChild(closeButton);
-//     lightboxContent.appendChild(mediaLightbox);
-//     lightboxContent.appendChild(previous);
-//     lightboxContent.appendChild(next);
+    body.appendChild(lightbox);
+    lightbox.appendChild(lightboxContenu);
+    lightboxContenu.appendChild(mediaLightbox);
+    lightboxContenu.appendChild(prev);
+    lightboxContenu.appendChild(next);
+    lightboxContenu.appendChild(closeLb);
+};
 
-//     // ajout de la lightbox dans le body
-//     const body = document.querySelector('body');
-//     body.appendChild(lightbox);
+
+
+function openLightbox(){
+    //récupérer les médias en fonction du photographe
+    const getMedias = document.querySelectorAll('.mediaArticle');
+    console.log(getMedias);
+    document.addEventListener('click', (e)=>{
+        e.preventDefault();
+        console.log('toto');
+    });   
+    //boucler sur tous ces médias
+    //ajout d'un event au click
+    //a l'event au click il faut récupérer l'index du média
+    //appel de la fonction createlightbox pour générer le dom
     
 
-//     // au clic sur previous, clickArrow est décrémenté de 1 avec --
-//     previous.addEventListener('click', () => {
-//         clickArrow--;
-//         // si clickArrow devient inférieur à 0
-//         // si oui, je dis que clickArrow doit pointer vers le dernier élément de mediaPhotographer
-//         if (clickArrow < 0) {
-//             // pour ce faire j'attribut à clickArrow la valeur de mediaPhotographer.length - 1
-//             clickArrow = mediaPhotographer.length - 1;
-//         }
-//         // j'appel la function updateLightbox avec le paramètre clickArrow pour mettre à jour la lightbox
-//         updateLightbox(clickArrow);
-//     });
-    
-//     // au clic sur next, clickArrow est incrémenté de 1 avec ++
-//     next.addEventListener('click', () => {
-//         clickArrow++;
-//         // si clickArrow est supérieur ou égal à mediaPhotographer
-//         // si oui, je dis que clickArrow doit pointer vers le premier élément
-//         if (clickArrow >= mediaPhotographer.length) {
-//             // et j'attribut la valeur à 0
-//             clickArrow = 0;
-//         }
-//         // j'appel la function updateLightbox avec le paramètre clickArrow pour mettre à jour la lightbox
-//         updateLightbox(clickArrow);
-//     });
-// }
-// // Je déclare une variable "clickArrow" qui est égale à 0 pour l'initialiser
-// let clickArrow = 0;
-
-
-// // Je définit une fonction 'updateLightbox' qui prend le paramètre 'clickArrow'
-// function updateLightbox(clickArrow){
-//     // je sélectionne le média voulu à partir de 'médiaPhotographer' en utilisant l'indice 'clickArrow'
-//     const selectMedia = mediaPhotographer[clickArrow];
-//     // j'appelle la fonction 'createLightBoxContent' en lui passant le paramètre 'chooseMedia' pour mette à jour la Lightbox
-//     createLightboxContent(selectMedia);
-// }
-
-// je déclare une variable mediaPhotographer en tant que tableau
-// let mediaPhotographer = [];
-
-//function openLightbox prend en paramètre event
-// function openLightbox(){
-//     // cible la classe mediaArticle dans mediaFactory
-//     const clickMedia = document.querySelector('.mediaArticle');
-//     const hrefMedia = clickMedia.getAttribute('href');
-//     console.log(hrefMedia);
-//     // trouve l'indice (la position) d'un élément dans mediaPhotographer basé sur la valeur de son attribut id à partir de clickMedia
-//     clickArrow = mediaPhotographer.findIndex(media => media.id === +clickMedia.getAttribute('data-id'));
-
-//     // je sélectionne la Lightbox à l'aide de la classe 'lightbox'
-//     const lightbox = document.querySelector('.lightbox');
-
-//     // Mise à jour la Lightbox en utilisant l'indice du média
-//     updateLightbox(clickArrow);
-//     // ouverture de la lightbox avec showModal
-//     lightbox.showModal();
-// }
-
-// function createCloseButton(){
-//     // création du bouton de fermeture
-//     const closeButton = document.createElement('button');
-//     // Ajout des classes et des attributs au bouton de fermeture de la Lightbox
-//     closeButton.classList.add('lbCloseButton', "fas", "fa-times");
-//     closeButton.setAttribute('aria-label', 'Fermeture du média');
-
-//     // écouteur d'évenement au click sur le bouton de fermeture
-//     closeButton.addEventListener('click', () => {
-//         // je sélectionne la Lightbox à l'aide de la classe 'lightbox'
-//         const lightbox = document.querySelector('.lightbox');
-//         //fermeture de la lightbox
-//         lightbox.close();
-//     });
-//     // je retourne le bouton de fermeture de lightbox
-//     return closeButton;
-// }
-
-// //function createLightboxContent qui prend le paramètre (selectMedia)
-// function createLightboxContent(selectMedia){
-//     const lightboxLink = document.createElement('div');
-//     const lightboxImage = document.createElement('img');
-//     const lightboxVideo = document.createElement('video');
-//     const lightboxTitle = document.createElement('h3');
-
-//     //ajout des classes aux éléments HTML
-//     lightboxLink.classList.add('lightboxLink');
-//     lightboxImage.classList.add('lightboxImage');
-//     lightboxVideo.classList.add('lightboxVideo');
-//     lightboxTitle.classList.add('lightboxTitle');
-
-//     //textContent permet d'accéder à la valeur de texte contenue dans l'élément HTML
-//     // Cela signifie que le contenu texte de "lightboxTitle" sera mis à jour avec la valeur de "selectMedia.title".
-//     lightboxTitle.textContent = selectMedia.title;
-
-//     // selection de la lightbox avec la classe mediaLightbox
-//     const mediaLightbox = document.querySelector('.mediaLightbox');
-//     // permet de supprimer le contenu texte de mediaLightbox en lui attribuant une chaîne vide
-//     mediaLightbox.textContent = '';
-
-//     // J'ajoute des attributs aux élément "lightboxLink" et "lightboxTitle"
-//     lightboxLink.setAttribute("aria-label", `Média ${selectMedia.title}`);
-//     // tabindex donne un ordre de tabulation et pourra être mis en évidence pendant la navigation au clavier
-//     lightboxLink.setAttribute("tabindex", "0");
-//     lightboxTitle.setAttribute("tabindex", "0");
-//     lightboxTitle.setAttribute("lang", "en");
-
-//     // si selectMedia contient une image
-//     if(selectMedia.image){
-//         // conteneur pour l'image 'div'
-//         const lbImageCont = document.createElement('div');
-//         lbImageCont.classList.add('lightboxImg');
-
-//         //attribu une source d'image à l'attribut "src" de l'élément "lightboxImage".
-//         //la valeur de l'attribut "src" est définie en utilisant une expression de template string (entourée de backticks ``)
-//         //template string permet de concaténer des chaînes de caractères et des variables  
-//         lightboxImage.setAttribute('src', `assets/images/photos/${selectMedia.photographerID}/${selectMedia.image}`);
-//         lightboxImage.setAttribute('alt', `${selectMedia.alt}`);
-
-//         //ajout des enfants aux containers parent : lbImageCont / lightboxLink
-//         lbImageCont.appendChild(lightboxImage);
-//         lightboxLink.appendChild(lbImageCont);
-    
-//     // sinon si selectMedia contient une video
-//     }else if(selectMedia.video){
-//         // conteneur pour la vide 'div'
-//         const lbVideoCont = document.createElement('div');
-//         lbVideoCont.classList.add('lightboxVideo');
-
-//         lightboxVideo.setAttribute('src', `assets/images/photos/${selectMedia.photographerID}/${selectMedia.video}`);
-//         lightboxVideo.setAttribute('alt', `${selectMedia.alt}`);
-//         lightboxVideo.controls = true;
-//         //permet de précharger avec preload uniquement les métadonnées (metadata) avant la lecture de la vidéo
-//         lightboxVideo.setAttribute('preload', 'metadata');
-
-//         //ajout des enfants aux containers parent : lbVideoCont / lightboxLink
-//         lbVideoCont.appendChild(lightboxVideo);
-//         lightboxLink.appendChild(lbVideoCont);
-//     }
-
-//     mediaLightbox.appendChild(lightboxLink);
-//     mediaLightbox.appendChild(lightboxTitle);
-// }
-
-
-
-
+};
 
 // création d'une fonction init pour initialiser la page web
 // la fonction est créée de manière asyncrone pour attendre les données
@@ -283,13 +129,9 @@ function findMedia(photographerID, medias){
 // async = asyncrone -- await = attendre
 async function init(){
     //la const data attend la fonction dataPhotographers avec le chemin d'accès au fichier associé
-    const data = await dataPhotographers("../../data/photographers.json");
-    //je définie que {photographers} stock data
-    const {photographers, media} = data;
-
-    // j'instancie la function createLightbox
-    // createLightbox();
-
+    const dataJson = await dataPhotographers("../../data/photographers.json");
+    //je définie que {photographers} stock dataJson
+    const {photographers, media} = dataJson;    
     // la const urlParams va chercher dans l'url les paramètres
     // je déclare une nouvelle instance (NEW) d'url search params pour récupérer les paramètres de l'url
     // window = la page web - location = url - search = va être définit par un attribut GET
@@ -309,9 +151,10 @@ async function init(){
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
-    
     const medias = findMedia(photographerID, media);
     displayMedia(medias);
+    createLightbox();
+    openLightbox();
 };
 
 
