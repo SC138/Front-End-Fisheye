@@ -71,7 +71,7 @@ function displayMedia(mediaPhotographer){
         const photosUserDOM = mediaModel.photosUserDOM();
         mediaSection.appendChild(photosUserDOM);
     });
-    // clickMedia();
+    
 }
 
 function findMedia(photographerID, medias){
@@ -82,25 +82,25 @@ function findMedia(photographerID, medias){
 function createLightbox(){
     const body = document.querySelector('body');
     const lightbox = document.createElement('dialog');
-    const lightboxContenu = document.createElement('div');
+    // const lightboxContenu = document.createElement('div');
     const mediaLightbox = document.createElement('div');
     const prev = document.createElement('button');
     const next = document.createElement('button');
     const closeLb = document.createElement('span');
 
     lightbox.classList.add('lightbox');
-    lightboxContenu.classList.add('lightboxContenu');
+    // lightboxContenu.classList.add('lightboxContenu');
     mediaLightbox.classList.add('mediaLightbox');
     prev.classList.add('prev');
     next.classList.add('next');
     closeLb.classList.add('closeLb');
 
     body.appendChild(lightbox);
-    lightbox.appendChild(lightboxContenu);
-    lightboxContenu.appendChild(mediaLightbox);
-    lightboxContenu.appendChild(prev);
-    lightboxContenu.appendChild(next);
-    lightboxContenu.appendChild(closeLb);
+    lightbox.appendChild(mediaLightbox);
+    // lightboxContenu.appendChild(mediaLightbox);
+    mediaLightbox.appendChild(prev);
+    mediaLightbox.appendChild(next);
+    mediaLightbox.appendChild(closeLb);
 };
 
 
@@ -109,16 +109,23 @@ function openLightbox(){
     //récupérer les médias en fonction du photographe
     const getMedias = document.querySelectorAll('.mediaArticle');
     console.log(getMedias);
-    document.addEventListener('click', (e)=>{
+    document.addEventListener('click',(e) =>{
+
         e.preventDefault();
-        console.log('toto');
+        const lightbox = document.querySelector('.lightbox');
+        lightbox.style.display = 'block';
+        console.log(lightbox);
+        const mediaLightbox = document.querySelector('.mediaLightbox');
+        lightbox.style.display = 'block';
+        console.log(mediaLightbox);
+
+        lightbox.showModal();
+
     });   
     //boucler sur tous ces médias
     //ajout d'un event au click
     //a l'event au click il faut récupérer l'index du média
     //appel de la fonction createlightbox pour générer le dom
-    
-
 };
 
 // création d'une fonction init pour initialiser la page web
@@ -155,6 +162,7 @@ async function init(){
     displayMedia(medias);
     createLightbox();
     openLightbox();
+    
 };
 
 
