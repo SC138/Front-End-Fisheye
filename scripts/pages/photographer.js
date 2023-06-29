@@ -87,20 +87,29 @@ function createLightbox(){
     const prev = document.createElement('button');
     const next = document.createElement('button');
     const closeLb = document.createElement('span');
+    const icons = document.createElement('i');
 
     lightbox.classList.add('lightbox');
     // lightboxContenu.classList.add('lightboxContenu');
     mediaLightbox.classList.add('mediaLightbox');
-    prev.classList.add('prev');
-    next.classList.add('next');
+
+    prev.classList.add('prev', "fas", "fa-angle-left");
+    prev.setAttribute('aria-label','Média précédent');
+    
+    next.classList.add('next', "fas", "fa-angle-right");
+    next.setAttribute('aria-label','Média suivant');
+    // closeLb.classList.add('closeLb', "fas", "fa-times");
     closeLb.classList.add('closeLb');
+    closeLb.setAttribute('aria-label','Fermeture du média');
+    icons.classList.add("fas", "fa-times")
 
     body.appendChild(lightbox);
     lightbox.appendChild(mediaLightbox);
     // lightboxContenu.appendChild(mediaLightbox);
-    mediaLightbox.appendChild(prev);
-    mediaLightbox.appendChild(next);
-    mediaLightbox.appendChild(closeLb);
+    lightbox.appendChild(prev);
+    lightbox.appendChild(next);
+    lightbox.appendChild(closeLb);
+    closeLb.appendChild(icons);
 };
 
 
@@ -108,25 +117,57 @@ function createLightbox(){
 function openLightbox(){
     //récupérer les médias en fonction du photographe
     const getMedias = document.querySelectorAll('.mediaArticle');
-    console.log(getMedias);
-    document.addEventListener('click',(e) =>{
-
-        e.preventDefault();
-        const lightbox = document.querySelector('.lightbox');
-        lightbox.style.display = 'block';
-        console.log(lightbox);
-        const mediaLightbox = document.querySelector('.mediaLightbox');
-        lightbox.style.display = 'block';
-        console.log(mediaLightbox);
-
-        lightbox.showModal();
-
-    });   
+    const main = document.querySelector('main');
+    const header = document.querySelector('header');
+    const lightbox = document.querySelector('.lightbox');
+    const mediaLightbox = document.querySelector('.mediaLightbox');
+    const pMediaLB = document.querySelector('.pMedia');
+    
     //boucler sur tous ces médias
-    //ajout d'un event au click
+    getMedias.forEach((getMedia, index)=>{
+        const clone = getMedia.cloneNode(false);
+        //ajout d'un event au click
+        getMedia.addEventListener('click',(e) =>{
+            e.preventDefault();
+            lightbox.style.display = 'block';
+            main.classList.add('lightboxOpen');
+            header.classList.add('lightboxOpen');
+            mediaLightbox.innerHTML = "";
+            mediaLightbox.appendChild(clone); 
+            // pMediaLB.classList.add('.pMediaLB');
+
+            console.log(getMedia);
+            
+
+            //clone node
+            //je recupére l'adresse de l'image pour l'afficher dans mediaLightbox
+            //=> const mediaClick = e.target
+        });
+    })
+    
+    
     //a l'event au click il faut récupérer l'index du média
     //appel de la fonction createlightbox pour générer le dom
 };
+
+function closeLightbox(){
+    const btnCloseLb = document.querySelector('.closeLb');
+    const lightbox = document.querySelector('.lightbox');
+    const main = document.querySelector('main');
+    const header = document.querySelector('header');
+
+    btnCloseLb.addEventListener('click', ()=>{
+        lightbox.style.display = 'none';
+        main.classList.remove('lightboxOpen');
+        header.classList.remove('lightboxOpen');
+        // window.location.reload();
+    });
+    
+};
+
+
+
+
 
 // création d'une fonction init pour initialiser la page web
 // la fonction est créée de manière asyncrone pour attendre les données
@@ -162,6 +203,7 @@ async function init(){
     displayMedia(medias);
     createLightbox();
     openLightbox();
+    closeLightbox();
     
 };
 
