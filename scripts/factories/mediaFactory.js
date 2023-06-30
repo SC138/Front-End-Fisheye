@@ -10,7 +10,6 @@ function mediaFactory(media) {
         
 
         const link = document.createElement('a');
-        // link.classList.add('mediaArticle');
         article.classList.add('picsPhotographer');
         article.appendChild(link);
         
@@ -33,6 +32,8 @@ function mediaFactory(media) {
         article.appendChild(mediaContainer);           
         mediaContainer.appendChild(pMedia);
         mediaContainer.appendChild(pLikes);
+
+
 
         //ces conditions permettent de vérifier si le média est une image ou une vidéo
         if(image){
@@ -58,9 +59,10 @@ function mediaFactory(media) {
             const movie = document.createElement('video');
             movie.setAttribute("id", `movie_${id}`);      
             movie.setAttribute("src", mediaVideo);
-            movie.setAttribute("class", "mediaArticle");
+            movie.setAttribute("class", "mediaArticleVideo");
             movie.setAttribute("aria-label", `${title}`);
-            
+            // document.querySelector(".video").autoplay = true;
+            movie.play();
 
             link.appendChild(movie);
 

@@ -130,9 +130,8 @@ function openLightbox(){
         // cloner l'élément 'getMedia' sans inclure les enfants (false)
         const clone = getMedia.cloneNode(false);
         const mediaId = getMedia.getAttribute('id');
-        console.log(getMedia.getAttribute('id'));
-        const id = 'mediacontainer_' + getMedia.getAttribute('id');
-        console.log(document.getElementById(id));
+        const mediaContainerId = 'mediacontainer_' + mediaId.split('_')[1];
+        const mediaContainerClone = document.getElementById(mediaContainerId).cloneNode(true);
         //ajout d'un event au click
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
@@ -144,10 +143,9 @@ function openLightbox(){
             header.classList.add('lightboxOpen');
             // vide le contenu de l'élément 'mediaLightbox'
             mediaLightbox.innerHTML = "";
-            // pMediaContainer.innerHTML = "";
             // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
             mediaLightbox.appendChild(clone); 
-            // pMediaLB.classList.add('.pMediaLB');
+            mediaLightbox.appendChild(mediaContainerClone);
 
             // console.log(getMedia);
             
@@ -172,7 +170,6 @@ function closeLightbox(){
         lightbox.style.display = 'none';
         main.classList.remove('lightboxOpen');
         header.classList.remove('lightboxOpen');
-        // window.location.reload();
     });
     
 };
