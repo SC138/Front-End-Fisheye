@@ -16,6 +16,7 @@ function mediaFactory(media) {
         
 
         const mediaContainer = document.createElement('div');
+        mediaContainer.setAttribute("id", `mediacontainer_${id}`);
         mediaContainer.classList.add('media-likes-container');
 
         const pMedia = document.createElement('p');
@@ -40,7 +41,8 @@ function mediaFactory(media) {
             //ici j'ajoute l'id au lien 
             link.setAttribute('data-id', id);
 
-            const img = document.createElement('img');      
+            const img = document.createElement('img');
+            img.setAttribute("id", `img_${id}`);      
             img.setAttribute("src", mediaImage);
             img.setAttribute("class", "mediaArticle");
             img.setAttribute("alt", `${title}`);
@@ -53,7 +55,8 @@ function mediaFactory(media) {
             link.setAttribute('href',mediaVideo);
             link.setAttribute('data-id', id);
             
-            const movie = document.createElement('video');      
+            const movie = document.createElement('video');
+            movie.setAttribute("id", `movie_${id}`);      
             movie.setAttribute("src", mediaVideo);
             movie.setAttribute("class", "mediaArticle");
             movie.setAttribute("aria-label", `${title}`);

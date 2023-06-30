@@ -81,6 +81,7 @@ function findMedia(photographerID, medias){
 
 function createLightbox(){
     const body = document.querySelector('body');
+    // const pMediaContainer = document.querySelector('.media-likes-container');
     const lightbox = document.createElement('dialog');
     // const lightboxContenu = document.createElement('div');
     const mediaLightbox = document.createElement('div');
@@ -105,6 +106,7 @@ function createLightbox(){
 
     body.appendChild(lightbox);
     lightbox.appendChild(mediaLightbox);
+    // lightbox.appendChild(pMediaContainer);
     // lightboxContenu.appendChild(mediaLightbox);
     lightbox.appendChild(prev);
     lightbox.appendChild(next);
@@ -121,26 +123,36 @@ function openLightbox(){
     const header = document.querySelector('header');
     const lightbox = document.querySelector('.lightbox');
     const mediaLightbox = document.querySelector('.mediaLightbox');
-    const pMediaLB = document.querySelector('.pMedia');
+    // const pMediaContainer = document.querySelector('.media-likes-container');
     
     //boucler sur tous ces médias
     getMedias.forEach((getMedia, index)=>{
+        // cloner l'élément 'getMedia' sans inclure les enfants (false)
         const clone = getMedia.cloneNode(false);
+        const mediaId = getMedia.getAttribute('id');
+        console.log(getMedia.getAttribute('id'));
+        const id = 'mediacontainer_' + getMedia.getAttribute('id');
+        console.log(document.getElementById(id));
         //ajout d'un event au click
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
+            // afiche la LB
             lightbox.style.display = 'block';
+            // ajoute la classe 'lightboxOpen' à l'élément 'main'
             main.classList.add('lightboxOpen');
+            // ajoute la classe 'lightboxOpen' à l'élément 'header'
             header.classList.add('lightboxOpen');
+            // vide le contenu de l'élément 'mediaLightbox'
             mediaLightbox.innerHTML = "";
+            // pMediaContainer.innerHTML = "";
+            // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
             mediaLightbox.appendChild(clone); 
             // pMediaLB.classList.add('.pMediaLB');
 
-            console.log(getMedia);
+            // console.log(getMedia);
             
 
-            //clone node
-            //je recupére l'adresse de l'image pour l'afficher dans mediaLightbox
+
             //=> const mediaClick = e.target
         });
     })
