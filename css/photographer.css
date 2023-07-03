@@ -223,7 +223,7 @@ textarea {
 .lightbox{
     width: 80%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     top: 50px;
     z-index: 9999;
 }

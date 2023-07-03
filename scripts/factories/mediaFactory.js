@@ -62,7 +62,7 @@ function mediaFactory(media) {
             movie.setAttribute("class", "mediaArticleVideo");
             movie.setAttribute("aria-label", `${title}`);
             // document.querySelector(".video").autoplay = true;
-            movie.play();
+            // movie.play();
 
             link.appendChild(movie);
 

@@ -81,33 +81,36 @@ function findMedia(photographerID, medias){
 
 function createLightbox(){
     const body = document.querySelector('body');
-    // const pMediaContainer = document.querySelector('.media-likes-container');
     const lightbox = document.createElement('dialog');
-    // const lightboxContenu = document.createElement('div');
     const mediaLightbox = document.createElement('div');
+
+    const videoLightbox = document.createElement('video'); //----------
+
     const prev = document.createElement('button');
     const next = document.createElement('button');
     const closeLb = document.createElement('span');
     const icons = document.createElement('i');
 
     lightbox.classList.add('lightbox');
-    // lightboxContenu.classList.add('lightboxContenu');
     mediaLightbox.classList.add('mediaLightbox');
+
+    videoLightbox.setAttribute('controls', true); //----------
+
 
     prev.classList.add('prev', "fas", "fa-angle-left");
     prev.setAttribute('aria-label','Média précédent');
     
     next.classList.add('next', "fas", "fa-angle-right");
     next.setAttribute('aria-label','Média suivant');
-    // closeLb.classList.add('closeLb', "fas", "fa-times");
     closeLb.classList.add('closeLb');
     closeLb.setAttribute('aria-label','Fermeture du média');
     icons.classList.add("fas", "fa-times")
 
     body.appendChild(lightbox);
     lightbox.appendChild(mediaLightbox);
-    // lightbox.appendChild(pMediaContainer);
-    // lightboxContenu.appendChild(mediaLightbox);
+
+    mediaLightbox.appendChild(videoLightbox); //-----------
+
     lightbox.appendChild(prev);
     lightbox.appendChild(next);
     lightbox.appendChild(closeLb);
@@ -119,14 +122,17 @@ function createLightbox(){
 function openLightbox(){
     //récupérer les médias en fonction du photographe
     const getMedias = document.querySelectorAll('.mediaArticle');
+    const getMediasVideo = document.querySelectorAll('.mediaArticleVideo');
     const main = document.querySelector('main');
     const header = document.querySelector('header');
     const lightbox = document.querySelector('.lightbox');
     const mediaLightbox = document.querySelector('.mediaLightbox');
     // const pMediaContainer = document.querySelector('.media-likes-container');
     
+
+    //Gestion des images
     //boucler sur tous ces médias
-    getMedias.forEach((getMedia, index)=>{
+    getMedias.forEach((getMedia)=>{
         // cloner l'élément 'getMedia' sans inclure les enfants (false)
         const clone = getMedia.cloneNode(false);
         const mediaId = getMedia.getAttribute('id');
@@ -146,12 +152,33 @@ function openLightbox(){
             // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
             mediaLightbox.appendChild(clone); 
             mediaLightbox.appendChild(mediaContainerClone);
+        });
+    })
 
-            // console.log(getMedia);
-            
-
-
-            //=> const mediaClick = e.target
+    //Gestion des videos
+    //boucler sur tous ces médias
+    getMediasVideo.forEach((getMediaVideo)=>{
+        // cloner l'élément 'getMedia' sans inclure les enfants (false)
+        const clone = getMediaVideo.cloneNode(false);
+        const mediaId = getMediaVideo.getAttribute('id');
+        const mediaContainerId = 'mediacontainer_' + mediaId.split('_')[1];
+        const mediaContainerClone = document.getElementById(mediaContainerId).cloneNode(true);
+        //ajout d'un event au click
+        getMediaVideo.addEventListener('click',(e) =>{
+            e.preventDefault();
+            // afiche la LB
+            lightbox.style.display = 'block';
+            // ajoute la classe 'lightboxOpen' à l'élément 'main'
+            main.classList.add('lightboxOpen');
+            // ajoute la classe 'lightboxOpen' à l'élément 'header'
+            header.classList.add('lightboxOpen');
+            // vide le contenu de l'élément 'mediaLightbox'
+            mediaLightbox.innerHTML = "";
+            // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
+            mediaLightbox.appendChild(clone); 
+            mediaLightbox.appendChild(mediaContainerClone);
+            clone.controls=true;
+            clone.play();
         });
     })
     
@@ -219,4 +246,6 @@ async function init(){
 
 // j'instancie ma fonction init 
 init();
+
+
 
