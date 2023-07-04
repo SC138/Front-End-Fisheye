@@ -239,6 +239,8 @@ textarea {
     position: relative;
 }
 
+
+
 .mediaLightbox{
     width: 80%;
     height: 80%;
@@ -248,13 +250,13 @@ textarea {
 .mediaLightbox img{
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .mediaLightbox video{
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .closeLb{

@@ -13,7 +13,6 @@
         return photographers;
     };
 
-
     // déclaration d'une fonction asyncrone displayData avec le paramètre (photographers)
     async function displayData(photographers) {
         // je fais une requête de selection sur la classe .photographer_section

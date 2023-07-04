@@ -129,15 +129,17 @@ function openLightbox(){
     const mediaLightbox = document.querySelector('.mediaLightbox');
     // const pMediaContainer = document.querySelector('.media-likes-container');
     
-
+    
+    
     //Gestion des images
     //boucler sur tous ces médias
     getMedias.forEach((getMedia)=>{
         // cloner l'élément 'getMedia' sans inclure les enfants (false)
-        const clone = getMedia.cloneNode(false);
+        const cloneImg = getMedia.cloneNode(false);
         const mediaId = getMedia.getAttribute('id');
         const mediaContainerId = 'mediacontainer_' + mediaId.split('_')[1];
         const mediaContainerClone = document.getElementById(mediaContainerId).cloneNode(true);
+        const pLikes = mediaContainerClone.querySelector('.pLikes');
         //ajout d'un event au click
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
@@ -149,8 +151,9 @@ function openLightbox(){
             header.classList.add('lightboxOpen');
             // vide le contenu de l'élément 'mediaLightbox'
             mediaLightbox.innerHTML = "";
-            // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
-            mediaLightbox.appendChild(clone); 
+            pLikes.style.display = 'none';
+            // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'   
+            mediaLightbox.appendChild(cloneImg); 
             mediaLightbox.appendChild(mediaContainerClone);
         });
     })
@@ -159,14 +162,15 @@ function openLightbox(){
     //boucler sur tous ces médias
     getMediasVideo.forEach((getMediaVideo)=>{
         // cloner l'élément 'getMedia' sans inclure les enfants (false)
-        const clone = getMediaVideo.cloneNode(false);
+        const cloneVideo = getMediaVideo.cloneNode(false);
         const mediaId = getMediaVideo.getAttribute('id');
         const mediaContainerId = 'mediacontainer_' + mediaId.split('_')[1];
         const mediaContainerClone = document.getElementById(mediaContainerId).cloneNode(true);
+        const pLikes = mediaContainerClone.querySelector('.pLikes');
         //ajout d'un event au click
         getMediaVideo.addEventListener('click',(e) =>{
             e.preventDefault();
-            // afiche la LB
+            // affiche la LB 
             lightbox.style.display = 'block';
             // ajoute la classe 'lightboxOpen' à l'élément 'main'
             main.classList.add('lightboxOpen');
@@ -174,11 +178,12 @@ function openLightbox(){
             header.classList.add('lightboxOpen');
             // vide le contenu de l'élément 'mediaLightbox'
             mediaLightbox.innerHTML = "";
+            pLikes.style.display = 'none';
             // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
-            mediaLightbox.appendChild(clone); 
+            mediaLightbox.appendChild(cloneVideo); 
             mediaLightbox.appendChild(mediaContainerClone);
-            clone.controls=true;
-            clone.play();
+            cloneVideo.controls=true;
+            cloneVideo.play();
         });
     })
     
@@ -192,6 +197,7 @@ function closeLightbox(){
     const lightbox = document.querySelector('.lightbox');
     const main = document.querySelector('main');
     const header = document.querySelector('header');
+    
 
     btnCloseLb.addEventListener('click', ()=>{
         lightbox.style.display = 'none';
