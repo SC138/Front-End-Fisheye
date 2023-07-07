@@ -1,4 +1,4 @@
-function mediaFactory(media) {
+function mediaFactory(media, index) {
     const {id, photographerId, title, image, video, likes, date, price} = media;
     const mediaImage = `assets/images/photos/${photographerId}/${image}`;
     const mediaVideo = `assets/images/photos/${photographerId}/${video}`;
@@ -15,10 +15,11 @@ function mediaFactory(media) {
         
 
         const mediaContainer = document.createElement('div');
-        mediaContainer.setAttribute("id", `mediacontainer_${id}`);
+        mediaContainer.setAttribute("id", `mediacontainer_${index}`);
         mediaContainer.classList.add('media-likes-container');
 
         const pMedia = document.createElement('p');
+        pMedia.setAttribute('id', `pmediacontainer_${index}`);
         pMedia.classList.add('pMedia');
 
         
@@ -43,9 +44,9 @@ function mediaFactory(media) {
             link.setAttribute('data-id', id);
 
             const img = document.createElement('img');
-            img.setAttribute("id", `img_${id}`);      
+            img.setAttribute("id", `img_${index}`);      
             img.setAttribute("src", mediaImage);
-            img.setAttribute("class", "mediaArticle");
+            img.setAttribute("class", "mediaArticle mediaLB");
             img.setAttribute("alt", `${title}`);
 
 
@@ -57,9 +58,9 @@ function mediaFactory(media) {
             link.setAttribute('data-id', id);
             
             const movie = document.createElement('video');
-            movie.setAttribute("id", `movie_${id}`);      
+            movie.setAttribute("id", `movie_${index}`);      
             movie.setAttribute("src", mediaVideo);
-            movie.setAttribute("class", "mediaArticleVideo");
+            movie.setAttribute("class", "mediaArticleVideo mediaLB");
             movie.setAttribute("aria-label", `${title}`);
             // document.querySelector(".video").autoplay = true;
             // movie.play();

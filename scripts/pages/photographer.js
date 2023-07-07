@@ -66,8 +66,8 @@ function headerPhotographer(photographer){
 function displayMedia(mediaPhotographer){
     const mediaSection = document.querySelector('#media-photographer');
 
-    mediaPhotographer.forEach((media) => {
-        const mediaModel = mediaFactory(media);
+    mediaPhotographer.forEach((media, index) => {
+        const mediaModel = mediaFactory(media, index);
         const photosUserDOM = mediaModel.photosUserDOM();
         mediaSection.appendChild(photosUserDOM);
     });
@@ -118,31 +118,35 @@ function createLightbox(){
 };
 
 
+let currentIndex = 0;
+let allMedias;
 
 function openLightbox(){
     //récupérer les médias en fonction du photographe
-    const getMedias = document.querySelectorAll('.mediaArticle');
-    const getMediasVideo = document.querySelectorAll('.mediaArticleVideo');
+    // const getImg = document.querySelectorAll('.mediaArticle');
+    // const getVideo = document.querySelectorAll('.mediaArticleVideo');
+    allMedias = document.querySelectorAll('.mediaLB') ;//[...getImg, ...getVideo]
     const main = document.querySelector('main');
     const header = document.querySelector('header');
     const lightbox = document.querySelector('.lightbox');
     const mediaLightbox = document.querySelector('.mediaLightbox');
-    // const pMediaContainer = document.querySelector('.media-likes-container');
+    const next = document.querySelector('.next');
+    const prev = document.querySelector('.prev');
     
-    
-    
-    //Gestion des images
+    //Gestion des images / video
     //boucler sur tous ces médias
-    getMedias.forEach((getMedia)=>{
+    //getMedia = un media contenu dans linksMedia
+    allMedias.forEach((getMedia, index)=>{
         // cloner l'élément 'getMedia' sans inclure les enfants (false)
-        const cloneImg = getMedia.cloneNode(false);
+        const cloneMedia = getMedia.cloneNode(false);
         const mediaId = getMedia.getAttribute('id');
-        const mediaContainerId = 'mediacontainer_' + mediaId.split('_')[1];
-        const mediaContainerClone = document.getElementById(mediaContainerId).cloneNode(true);
-        const pLikes = mediaContainerClone.querySelector('.pLikes');
+        // la methode split permet de récupérer le premier élément situé après le _ contenu dans la chaine de caractères
+        const pMediaContainerid = 'pmediacontainer_' + mediaId.split('_')[1];
+        const pmediaContainerClone = document.getElementById(pMediaContainerid).cloneNode(true);
         //ajout d'un event au click
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
+            currentIndex = index; //----------------------------------
             // afiche la LB
             lightbox.style.display = 'block';
             // ajoute la classe 'lightboxOpen' à l'élément 'main'
@@ -151,45 +155,74 @@ function openLightbox(){
             header.classList.add('lightboxOpen');
             // vide le contenu de l'élément 'mediaLightbox'
             mediaLightbox.innerHTML = "";
-            pLikes.style.display = 'none';
-            // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'   
-            mediaLightbox.appendChild(cloneImg); 
-            mediaLightbox.appendChild(mediaContainerClone);
-        });
-    })
-
-    //Gestion des videos
-    //boucler sur tous ces médias
-    getMediasVideo.forEach((getMediaVideo)=>{
-        // cloner l'élément 'getMedia' sans inclure les enfants (false)
-        const cloneVideo = getMediaVideo.cloneNode(false);
-        const mediaId = getMediaVideo.getAttribute('id');
-        const mediaContainerId = 'mediacontainer_' + mediaId.split('_')[1];
-        const mediaContainerClone = document.getElementById(mediaContainerId).cloneNode(true);
-        const pLikes = mediaContainerClone.querySelector('.pLikes');
-        //ajout d'un event au click
-        getMediaVideo.addEventListener('click',(e) =>{
-            e.preventDefault();
-            // affiche la LB 
-            lightbox.style.display = 'block';
-            // ajoute la classe 'lightboxOpen' à l'élément 'main'
-            main.classList.add('lightboxOpen');
-            // ajoute la classe 'lightboxOpen' à l'élément 'header'
-            header.classList.add('lightboxOpen');
-            // vide le contenu de l'élément 'mediaLightbox'
-            mediaLightbox.innerHTML = "";
-            pLikes.style.display = 'none';
+            mediaLightbox.appendChild(cloneMedia); 
+            mediaLightbox.appendChild(pmediaContainerClone);
             // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
-            mediaLightbox.appendChild(cloneVideo); 
-            mediaLightbox.appendChild(mediaContainerClone);
-            cloneVideo.controls=true;
-            cloneVideo.play();
+            if(getMedia.classList.contains('mediaArticleVideo')) {
+                cloneMedia.setAttribute('controls', true);
+            }
         });
-    })
+    });
+    next.addEventListener('click',()=>{
+        currentIndex++;
+        // si currentindex dépasse la longueur de allMedias
+        if(currentIndex >= allMedias.length){
+            //réinitialiser currentIndex à 0
+            currentIndex = 0;
+        }
+        displayMediaIndex(currentIndex);
+    });
+
+    // navigation aavec les fleches du clavier dans la LB
+    document.addEventListener('keydown', event =>{
+        if (event.key === 'ArrowRight') {
+            next.click();
+        }
+
+        if (event.key === 'ArrowLeft') {
+            prev.click();
+        }
+    });
+
+    prev.addEventListener('click',()=>{
+        currentIndex--;
+        // si currentindex dépasse la longueur de allMedias
+        if(currentIndex < 0){
+            //réinitialiser currentIndex à 0
+            currentIndex = allMedias.length - 1;
+        }
+        displayMediaIndex(currentIndex);
+    });
+
     
+};
+
+function displayMediaIndex(index){
+    // sélectionne tous les médias et le conteneur de la lightbox
+    const allMedias = document.querySelectorAll('.mediaLB');
+    const mediaLightbox = document.querySelector('.mediaLightbox');
+    // vide le contenu de la lightbox
+    mediaLightbox.innerHTML = "";
+    console.log(index);
+    // cloner le media à l'index spécifié et l'ajoute à la lightbox
+    const newMedia = allMedias[index].cloneNode(true);
+
+    if(allMedias[index].classList.contains('mediaArticleVideo')) {
+        newMedia.setAttribute('controls', true);
+    }
     
-    //a l'event au click il faut récupérer l'index du média
-    //appel de la fonction createlightbox pour générer le dom
+    mediaLightbox.appendChild(newMedia);
+
+    // récupère l'id du media cloné
+    let newMediaId = newMedia.getAttribute('id');
+    let idNumber = newMediaId.split('_')[1];
+    
+    // construction de l'id du conteneur pmedia et le cloner
+    let pmediaContainerId = 'pmediacontainer_' + idNumber;
+    let pmediaContainerClone = document.getElementById(pmediaContainerId).cloneNode(true);
+    
+    // ajoute le clone de pmediaContainer à la lightbox
+    mediaLightbox.appendChild(pmediaContainerClone);
 };
 
 function closeLightbox(){
@@ -204,8 +237,19 @@ function closeLightbox(){
         main.classList.remove('lightboxOpen');
         header.classList.remove('lightboxOpen');
     });
+
+    // ferme la LB en appyant sur la touche espace
+    document.addEventListener('keydown', (event) => {
+        if (event.key === ' ') {
+            lightbox.style.display = 'none';
+            main.classList.remove('lightboxOpen');
+            header.classList.remove('lightboxOpen');
+            event.preventDefault()
+        }
+    });
     
 };
+
 
 
 
