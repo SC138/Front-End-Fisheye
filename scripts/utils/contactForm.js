@@ -6,6 +6,7 @@ const contact_modal = document.getElementById("contact_modal");
 // ouverture modal form
 function displayModal() {
 	contact_modal.style.display = "block";
+    
 }
 
 
@@ -44,12 +45,6 @@ formElement.addEventListener("submit", (event) => {
 function submitForm(){
     isSubmited ? (formElement.reset(), closeModal()) : null;
 }
-// function submitForm(){
-//     if(isSubmited){
-//         formElement.reset()
-//         closeModal();
-//     }
-// };
 
 
 // Ajout d'un écouteur d'événement pour la soumission du formulaire
@@ -62,3 +57,5 @@ contact_button.addEventListener("click", displayModal);
 // lorsque l'événement se produit, la fonction closeModal est appelée
 close_button.addEventListener("click", closeModal);
 
+// contact_button.focus();
+// closeModal.focus();

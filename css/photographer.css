@@ -114,12 +114,17 @@ header{
     position: absolute;
 }
 
-.close_button{
-    margin: 0;
+.close_btn{
+    width: 50px;
+    height: 50px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
     position: absolute;
     top: 30px;
     right: 30px;
 }
+
 
 .name_contact{
     display: flex;
@@ -218,6 +223,19 @@ textarea {
     font-size: 24px;
     right: 0;
     top: 0;
+}
+
+.floating-box{
+    width: 17em;
+    height: 60px;
+    display: flex;
+    font-size: 20px;
+    justify-content: space-around;
+    background-color: #DB8876; 
+    border-radius: 5px 5px 0 0;
+    position: fixed;
+    bottom: 0;
+    right: 40px;
 }
 
 .lightbox{

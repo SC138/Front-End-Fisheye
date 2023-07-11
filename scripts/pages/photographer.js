@@ -71,13 +71,72 @@ function displayMedia(mediaPhotographer){
         const photosUserDOM = mediaModel.photosUserDOM();
         mediaSection.appendChild(photosUserDOM);
     });
+
     
-}
+    const allMediasElements = document.querySelectorAll('.picsPhotographer');
+    allMediasElements.forEach((mediaElement)=>{
+        mediaElement.addEventListener('keydown', event =>{
+            if (event.key === 'Enter') {
+                // console.log('j\'ai appuyé sur entrer sur un media')
+                // TODO: effectuer un click sur l'img contenue dans cette balise a
+                // Indice: Regarder comment récupérer un élément enfant de l'élément actuel
+
+                mediaElement.querySelector('.mediaLB').click();
+                event.preventDefault();
+            }
+        });
+    });
+};
+
+
+
 
 function findMedia(photographerID, medias){
+    // Filtrer les médias par photographerID
     const mediasPhotographer = medias.filter(media => media.photographerId === photographerID);
     return mediasPhotographer;
 };
+
+// function addLikes() {
+//     const addLikes = document.querySelectorAll('.pLikes');
+//     addLikes.addEventListener('click', event =>{
+//         addLikes++;
+//     });
+//     console.log(addLikes);
+// };
+
+
+
+function boxLikesPrice(medias, photographerID, photographers) {
+    // Filtrer les médias par photographerID
+    const mediasPhotographer = medias.filter(media => media.photographerId === photographerID);
+
+    // Calculer le nombre total de likes
+    let totalLikes = 0;
+    mediasPhotographer.forEach(media => {
+        totalLikes += media.likes;
+    });
+
+    // Création de l'encart
+    const floatingBox = document.createElement('div');
+    floatingBox.classList.add('floating-box');
+
+    // Ajout du nombre total de likes
+    const likesElement = document.createElement('p');
+    likesElement.innerHTML = `${totalLikes} <i class="fa-solid fa-heart"></i>`;
+    floatingBox.appendChild(likesElement);
+
+
+    const priceElement = document.createElement('p');
+    priceElement.textContent = `${photographers.price} €/jour`;
+    floatingBox.appendChild(priceElement);
+
+    // Ajout de l'encart au body de la page
+    const main = document.querySelector('main');
+    main.appendChild(floatingBox);
+};
+
+
 
 function createLightbox(){
     const body = document.querySelector('body');
@@ -105,6 +164,7 @@ function createLightbox(){
     closeLb.classList.add('closeLb');
     closeLb.setAttribute('aria-label','Fermeture du média');
     icons.classList.add("fas", "fa-times")
+
 
     body.appendChild(lightbox);
     lightbox.appendChild(mediaLightbox);
@@ -173,8 +233,9 @@ function openLightbox(){
         displayMediaIndex(currentIndex);
     });
 
-    // navigation aavec les fleches du clavier dans la LB
+    // navigation avec les fleches du clavier dans la LB
     document.addEventListener('keydown', event =>{
+
         if (event.key === 'ArrowRight') {
             next.click();
         }
@@ -193,6 +254,16 @@ function openLightbox(){
         }
         displayMediaIndex(currentIndex);
     });
+
+
+    // const videoElement = document.querySelector('video');
+    // window.addEventListener('keydown', event =>{
+        
+    //     if (event.key === 'p'){
+    //         console.log('p');
+    //         videoElement.play();
+    //     }
+    // });
 
     
 };
@@ -244,16 +315,11 @@ function closeLightbox(){
             lightbox.style.display = 'none';
             main.classList.remove('lightboxOpen');
             header.classList.remove('lightboxOpen');
-            event.preventDefault()
+            event.preventDefault();
         }
     });
     
 };
-
-
-
-
-
 
 // création d'une fonction init pour initialiser la page web
 // la fonction est créée de manière asyncrone pour attendre les données
@@ -286,16 +352,16 @@ async function init(){
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
     const medias = findMedia(photographerID, media);
+    
+    boxLikesPrice(media, photographerID, photographer);
+
     displayMedia(medias);
+    // addLikes();
     createLightbox();
     openLightbox();
     closeLightbox();
-    
 };
 
 
 // j'instancie ma fonction init 
 init();
-
-
-
