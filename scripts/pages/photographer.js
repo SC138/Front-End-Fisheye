@@ -66,7 +66,7 @@ function displayMedia(mediaPhotographer){
     const mediaSection = document.querySelector('#media-photographer');
 
     mediaPhotographer.forEach((media, index) => {
-        const mediaModel = mediaFactory(media, index);
+        const mediaModel = mediaFactory(media, index, updateTotalLikes);
         const photosUserDOM = mediaModel.photosUserDOM();
         mediaSection.appendChild(photosUserDOM);
     });
@@ -90,19 +90,12 @@ function findMedia(photographerID, medias){
     return mediasPhotographer;
 };
 
-// function addLikes() {
-//     const addLikes = document.querySelectorAll('.pLikes');
-//     addLikes.addEventListener('click', event =>{
-//         addLikes++;
-//     });
-//     console.log(addLikes);
-// };
 
 function boxLikesPrice(medias, photographerID, photographers) {
-    // Filtrer les médias par photographerID
+    // Filtre les médias par photographerID
     const mediasPhotographer = medias.filter(media => media.photographerId === photographerID);
 
-    // Calculer le nombre total de likes
+    // Calcule le nombre total de likes
     let totalLikes = 0;
     mediasPhotographer.forEach(media => {
         totalLikes += media.likes;
@@ -116,7 +109,8 @@ function boxLikesPrice(medias, photographerID, photographers) {
     const likesElement = document.createElement('p');
     likesElement.innerHTML = `${totalLikes} <i class="fa-solid fa-heart"></i>`;
     floatingBox.appendChild(likesElement);
-
+    // j'affecte l'élément à totalLikesElement
+    totalLikesElement = likesElement;  
 
     const priceElement = document.createElement('p');
     priceElement.textContent = `${photographers.price} €/jour`;
@@ -126,6 +120,24 @@ function boxLikesPrice(medias, photographerID, photographers) {
     const main = document.querySelector('main');
     main.appendChild(floatingBox);
 };
+
+let totalLikesElement;
+
+// Fonction pour mettre à jour le nombre total de likes
+function updateTotalLikes(increment) {
+    // Obtenir le texte actuel de totalLikesElement, le diviser en morceaux,
+    // prendre le premier morceau (le nombre de likes) et le convertir en nombre
+    // la fonction Number permet de convertir la string en nombre pour pouvoir l'incrémenter
+    const currentLikes = Number(totalLikesElement.textContent.split(' ')[0]); 
+    // ajoute l'incrément au nombre actuel de likes pour obtenir le nouveau nombre de likes
+    const newLikes = currentLikes + increment;
+    // met à jour totalLikesElement pour afficher le nouveau nombre de likes suivi de l'icône de cœur
+    totalLikesElement.innerHTML = `${newLikes} <i class="fa-solid fa-heart"></i>`; 
+
+}
+
+
+
 
 
 function createLightbox(){
@@ -175,38 +187,63 @@ function handleTabulationInLightbox(e) {
     const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     const lightbox = document.querySelector('.lightbox');
 
+    //si la LB est affichée
     if(lightbox.style.display !== "none") {
+        // séléction des éléments puvant recevoir le focus dans la LB
         const focusableModalElements = lightbox.querySelectorAll(focusableElements);
+        // définit le premier et dernier élément pouvant recevoir le focus
         const firstElement = focusableModalElements[0];  // prevButton
         const secondElement = focusableModalElements[1];  // nextButton
         const lastElement = focusableModalElements[focusableModalElements.length - 1];  // closeButton
 
-        if (!lightbox.contains(document.activeElement)) {
+            // vérifie si le focus est à l'extérieur de la lightbox
+        let isFocusOutsideLightbox = !lightbox.contains(document.activeElement);
+        // vérifie si la touche shift est appuyée
+        let isShiftKeyPressed = e.shiftKey;
+        // vérifie sur quel élément le focus se fait actuellement
+        let isFocusOnFirstElement = (document.activeElement === firstElement);
+        let isFocusOnSecondElement = (document.activeElement === secondElement);
+        let isFocusOnLastElement = (document.activeElement === lastElement);
+
+        // si le focus est à l'extérieur de la lightbox, donne le focus au premier élément
+        if (isFocusOutsideLightbox) {
             firstElement.focus();
         } else {
-            if (e.shiftKey && document.activeElement === firstElement) {
+            // si la touche shift est appuyée et que le focus est sur le premier élément,
+            // donne le focus au dernier élément
+            if (isShiftKeyPressed && isFocusOnFirstElement) {
                 e.preventDefault();
                 lastElement.focus();
-            } else if (document.activeElement === firstElement && !e.shiftKey) {
+            // si la touche shift n'est pas appuyée et que le focus est sur le premier élément,
+            // donne le focus au second élément
+            } else if (isFocusOnFirstElement && !isShiftKeyPressed) {
                 e.preventDefault();
                 secondElement.focus();
-            } else if (document.activeElement === secondElement && !e.shiftKey) {
+            // si la touche shift n'est pas appuyée et que le focus est sur le second élément,
+            // donne le focus au dernier élément
+            } else if (isFocusOnSecondElement && !isShiftKeyPressed) {
                 e.preventDefault();
                 lastElement.focus();
-            } else if (document.activeElement === secondElement && e.shiftKey) {
+            // si la touche shift est appuyée et que le focus est sur le second élément,
+            // donne le focus au premier élément
+            } else if (isFocusOnSecondElement && isShiftKeyPressed) {
                 e.preventDefault();
                 firstElement.focus();
-            } else if (document.activeElement === lastElement && !e.shiftKey) {
+            // si la touche shift n'est pas appuyée et que le focus est sur le dernier élément,
+            // donne le focus au premier élément
+            } else if (isFocusOnLastElement && !isShiftKeyPressed) {
                 e.preventDefault();
                 firstElement.focus();
-            } else if (document.activeElement === lastElement && e.shiftKey) {
+            // si la touche shift est appuyée et que le focus est sur le dernier élément,
+            // donne le focus au second élément
+            } else if (isFocusOnLastElement && isShiftKeyPressed) {
                 e.preventDefault();
                 secondElement.focus();
             }
         }
     }
 }
-
+// appelle de la fonction handleTabulationInLightbox si Tab ou Shift+Tab est appuyée
 document.addEventListener('keydown', handleTabulationInLightbox);
 
 
@@ -236,7 +273,6 @@ function displayLightBoxWithOneMedia(media) {
         cloneMedia.setAttribute('controls', true);
     }
 
-
     handleTabulationInLightbox();
 }
 
@@ -246,10 +282,10 @@ function openLightbox(){
     //récupérer les médias en fonction du photographe
     const allMedias = document.querySelectorAll('.mediaLB') ;
     let currentIndex = 0;
-    const main = document.querySelector('main');
-    const header = document.querySelector('header');
-    const lightbox = document.querySelector('.lightbox');
-    const mediaLightbox = document.querySelector('.mediaLightbox');
+    // const main = document.querySelector('main');
+    // const header = document.querySelector('header');
+    // const lightbox = document.querySelector('.lightbox');
+    // const mediaLightbox = document.querySelector('.mediaLightbox');
     const next = document.querySelector('.next');
     const prev = document.querySelector('.prev');
     
