@@ -1,18 +1,84 @@
 const formElement = document.querySelector("form");
 const contact_button = document.querySelector(".contact_button");
-const close_button = document.querySelector(".close_button");
+const close_button = document.querySelector(".close_btn");
 const contact_modal = document.getElementById("contact_modal");
+
+// ajout des éléments à l'intérieur de la modal à focus 
+const focusableElements = 'button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const modalContact = document.querySelector('.modal');
+//Sélectionne le premier élément qui peut recevoir le focus dans la modale.
+const firstFocusableElement = modalContact.querySelectorAll(focusableElements)[0]; 
+const focusableContent = modalContact.querySelectorAll(focusableElements);
+const lastFocusableElement = focusableContent[focusableContent.length - 1];
 
 // ouverture modal form
 function displayModal() {
-	contact_modal.style.display = "block";
-    
+    // récupération de tous les éléments pouvant recevoir le focus
+    const focusableElements = document.querySelectorAll('button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+
+    // affiche la modale
+    contact_modal.style.display = "block";
+
+    // pour chaque élément qui peut recevoir le focus...
+    focusableElements.forEach(function(item) {
+        // s'il n'est pas dans la modale...
+        if (!modalContact.contains(item)) {
+            // alors on lui interdit de recevoir le focus
+            item.setAttribute('tabindex', '-1');
+        }
+    });
+
+    // donne le focus au bouton de fermeture de la modale
+    close_button.focus();
+
+    // ajout d'un écouteur d'événement pour gérer le piège à tabulation
+    document.addEventListener('keydown', trapTabKey);
+}
+
+
+
+function trapTabKey(e) {
+    // définit la touche Tab
+    let isTabPressed = e.key === 'Tab';
+
+    // Si tab est préssé, la fonction s'arrête
+    if (!isTabPressed) {
+        return;
+    }
+
+    if (e.shiftKey) { 
+        // si la touche shift est enfoncée pour la combinaison shift + tab
+        if (document.activeElement === firstFocusableElement) {
+            // ajoute le focus pour le dernier élément pouvant recevoir le focus
+            lastFocusableElement.focus();
+            e.preventDefault();
+        }
+    } else {
+        // si la touche tab est enfoncée
+        if (document.activeElement === lastFocusableElement) {
+            // si le focus a atteint le dernier élément pouvant recevoir le focus 
+            // alors focus le premier élément pouvant recevoir le focus après avoir appuyé sur tab
+            firstFocusableElement.focus();
+            e.preventDefault();
+        }
+    }
 }
 
 
 // fermeture modal
 function closeModal() {
+    const focusableElements = document.querySelectorAll('button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+
     contact_modal.style.display = "none";
+
+    focusableElements.forEach(function(item) {
+        if (!modalContact.contains(item)) {
+            item.setAttribute('tabindex', '0');
+        }
+    });
+    // ici on enlève l'écouteur d'événement
+    document.removeEventListener('keydown', trapTabKey);
+    close_button.focus();
 }
 
 
@@ -57,5 +123,3 @@ contact_button.addEventListener("click", displayModal);
 // lorsque l'événement se produit, la fonction closeModal est appelée
 close_button.addEventListener("click", closeModal);
 
-// contact_button.focus();
-// closeModal.focus();

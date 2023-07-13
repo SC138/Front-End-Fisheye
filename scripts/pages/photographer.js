@@ -23,7 +23,6 @@ function headerPhotographer(photographer){
     const img = document.createElement( 'img' );
 
     // ajout a la balise img un attribut src pour définir le chemin d'accès à l'image
-    // img.setAttribute("src", `../assets/photographers/${photographer.portrait}`);
     img.setAttribute("src", "../assets/photographers/" + photographer.portrait);
 
 
@@ -77,18 +76,12 @@ function displayMedia(mediaPhotographer){
     allMediasElements.forEach((mediaElement)=>{
         mediaElement.addEventListener('keydown', event =>{
             if (event.key === 'Enter') {
-                // console.log('j\'ai appuyé sur entrer sur un media')
-                // TODO: effectuer un click sur l'img contenue dans cette balise a
-                // Indice: Regarder comment récupérer un élément enfant de l'élément actuel
-
                 mediaElement.querySelector('.mediaLB').click();
                 event.preventDefault();
             }
         });
     });
 };
-
-
 
 
 function findMedia(photographerID, medias){
@@ -104,8 +97,6 @@ function findMedia(photographerID, medias){
 //     });
 //     console.log(addLikes);
 // };
-
-
 
 function boxLikesPrice(medias, photographerID, photographers) {
     // Filtrer les médias par photographerID
@@ -137,40 +128,41 @@ function boxLikesPrice(medias, photographerID, photographers) {
 };
 
 
-
 function createLightbox(){
     const body = document.querySelector('body');
     const lightbox = document.createElement('dialog');
+    lightbox.setAttribute('tabindex', '0');  // Rend la lightbox focusable
+
     const mediaLightbox = document.createElement('div');
-
     const videoLightbox = document.createElement('video'); //----------
-
     const prev = document.createElement('button');
     const next = document.createElement('button');
-    const closeLb = document.createElement('span');
+    const closeLb = document.createElement('button');
     const icons = document.createElement('i');
 
     lightbox.classList.add('lightbox');
     mediaLightbox.classList.add('mediaLightbox');
-
     videoLightbox.setAttribute('controls', true); //----------
-
-
     prev.classList.add('prev', "fas", "fa-angle-left");
-    prev.setAttribute('aria-label','Média précédent');
-    
+    prev.setAttribute('aria-label','Média précédent');   
     next.classList.add('next', "fas", "fa-angle-right");
     next.setAttribute('aria-label','Média suivant');
     closeLb.classList.add('closeLb');
     closeLb.setAttribute('aria-label','Fermeture du média');
+    closeLb.setAttribute('tabindex', '1');
     icons.classList.add("fas", "fa-times")
 
+    closeLb.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.click();
+        }
+    });
+    
 
     body.appendChild(lightbox);
     lightbox.appendChild(mediaLightbox);
-
     mediaLightbox.appendChild(videoLightbox); //-----------
-
     lightbox.appendChild(prev);
     lightbox.appendChild(next);
     lightbox.appendChild(closeLb);
@@ -178,14 +170,82 @@ function createLightbox(){
 };
 
 
-let currentIndex = 0;
-let allMedias;
+function handleTabulationInLightbox(e) {
+    // Sélection de tous les éléments qui peuvent recevoir le focus.
+    const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const lightbox = document.querySelector('.lightbox');
+
+    if(lightbox.style.display !== "none") {
+        const focusableModalElements = lightbox.querySelectorAll(focusableElements);
+        const firstElement = focusableModalElements[0];  // prevButton
+        const secondElement = focusableModalElements[1];  // nextButton
+        const lastElement = focusableModalElements[focusableModalElements.length - 1];  // closeButton
+
+        if (!lightbox.contains(document.activeElement)) {
+            firstElement.focus();
+        } else {
+            if (e.shiftKey && document.activeElement === firstElement) {
+                e.preventDefault();
+                lastElement.focus();
+            } else if (document.activeElement === firstElement && !e.shiftKey) {
+                e.preventDefault();
+                secondElement.focus();
+            } else if (document.activeElement === secondElement && !e.shiftKey) {
+                e.preventDefault();
+                lastElement.focus();
+            } else if (document.activeElement === secondElement && e.shiftKey) {
+                e.preventDefault();
+                firstElement.focus();
+            } else if (document.activeElement === lastElement && !e.shiftKey) {
+                e.preventDefault();
+                firstElement.focus();
+            } else if (document.activeElement === lastElement && e.shiftKey) {
+                e.preventDefault();
+                secondElement.focus();
+            }
+        }
+    }
+}
+
+document.addEventListener('keydown', handleTabulationInLightbox);
+
+
+
+function displayLightBoxWithOneMedia(media) {
+    const lightbox = document.querySelector('.lightbox');
+    const main = document.querySelector('main');
+    const header = document.querySelector('header');
+    const mediaLightbox = document.querySelector('.mediaLightbox');
+
+    const cloneMedia = media.cloneNode(false);
+    const mediaId = media.getAttribute('id');
+    const pMediaContainerid = 'pmediacontainer_' + mediaId.split('_')[1];
+    const pmediaContainerClone = document.getElementById(pMediaContainerid).cloneNode(true);
+
+    lightbox.style.display = 'block';
+    // ajoute la classe 'lightboxOpen' à l'élément 'main'
+    main.classList.add('lightboxOpen');
+    // ajoute la classe 'lightboxOpen' à l'élément 'header'
+    header.classList.add('lightboxOpen');
+    // vide le contenu de l'élément 'mediaLightbox'
+    mediaLightbox.innerHTML = "";
+    mediaLightbox.appendChild(cloneMedia); 
+    mediaLightbox.appendChild(pmediaContainerClone);
+    // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
+    if(media.classList.contains('mediaArticleVideo')) {
+        cloneMedia.setAttribute('controls', true);
+    }
+
+
+    handleTabulationInLightbox();
+}
+
+
 
 function openLightbox(){
     //récupérer les médias en fonction du photographe
-    // const getImg = document.querySelectorAll('.mediaArticle');
-    // const getVideo = document.querySelectorAll('.mediaArticleVideo');
-    allMedias = document.querySelectorAll('.mediaLB') ;//[...getImg, ...getVideo]
+    const allMedias = document.querySelectorAll('.mediaLB') ;
+    let currentIndex = 0;
     const main = document.querySelector('main');
     const header = document.querySelector('header');
     const lightbox = document.querySelector('.lightbox');
@@ -197,30 +257,11 @@ function openLightbox(){
     //boucler sur tous ces médias
     //getMedia = un media contenu dans linksMedia
     allMedias.forEach((getMedia, index)=>{
-        // cloner l'élément 'getMedia' sans inclure les enfants (false)
-        const cloneMedia = getMedia.cloneNode(false);
-        const mediaId = getMedia.getAttribute('id');
-        // la methode split permet de récupérer le premier élément situé après le _ contenu dans la chaine de caractères
-        const pMediaContainerid = 'pmediacontainer_' + mediaId.split('_')[1];
-        const pmediaContainerClone = document.getElementById(pMediaContainerid).cloneNode(true);
         //ajout d'un event au click
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
             currentIndex = index; //----------------------------------
-            // afiche la LB
-            lightbox.style.display = 'block';
-            // ajoute la classe 'lightboxOpen' à l'élément 'main'
-            main.classList.add('lightboxOpen');
-            // ajoute la classe 'lightboxOpen' à l'élément 'header'
-            header.classList.add('lightboxOpen');
-            // vide le contenu de l'élément 'mediaLightbox'
-            mediaLightbox.innerHTML = "";
-            mediaLightbox.appendChild(cloneMedia); 
-            mediaLightbox.appendChild(pmediaContainerClone);
-            // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
-            if(getMedia.classList.contains('mediaArticleVideo')) {
-                cloneMedia.setAttribute('controls', true);
-            }
+            displayLightBoxWithOneMedia(getMedia);
         });
     });
     next.addEventListener('click',()=>{
@@ -255,7 +296,6 @@ function openLightbox(){
         displayMediaIndex(currentIndex);
     });
 
-
     // const videoElement = document.querySelector('video');
     // window.addEventListener('keydown', event =>{
         
@@ -264,8 +304,6 @@ function openLightbox(){
     //         videoElement.play();
     //     }
     // });
-
-    
 };
 
 function displayMediaIndex(index){
