@@ -155,7 +155,7 @@ function createLightbox(){
     lightbox.classList.add('lightbox');
     mediaLightbox.classList.add('mediaLightbox');
     videoLightbox.setAttribute('controls', true);
-    // videoLightbox.setAttribute('tabindex', '0');
+    videoLightbox.setAttribute('tabindex', '-1');
     prev.classList.add('prev', "fas", "fa-angle-left");
     prev.setAttribute('aria-label','Média précédent');   
     next.classList.add('next', "fas", "fa-angle-right");
