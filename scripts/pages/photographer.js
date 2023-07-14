@@ -154,7 +154,8 @@ function createLightbox(){
 
     lightbox.classList.add('lightbox');
     mediaLightbox.classList.add('mediaLightbox');
-    videoLightbox.setAttribute('controls', true); //----------
+    videoLightbox.setAttribute('controls', true);
+    // videoLightbox.setAttribute('tabindex', '0');
     prev.classList.add('prev', "fas", "fa-angle-left");
     prev.setAttribute('aria-label','Média précédent');   
     next.classList.add('next', "fas", "fa-angle-right");
@@ -182,14 +183,15 @@ function createLightbox(){
 };
 
 
-function handleTabulationInLightbox(e) {
+function handleTabulationInLightbox(ev) {
+    console.log(ev);
     // Sélection de tous les éléments qui peuvent recevoir le focus.
     const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     const lightbox = document.querySelector('.lightbox');
-
     //si la LB est affichée
+    //&& e.key === 'Tab'
     if(lightbox.style.display !== "none") {
-        // séléction des éléments puvant recevoir le focus dans la LB
+        // séléction des éléments pouvant recevoir le focus dans la LB
         const focusableModalElements = lightbox.querySelectorAll(focusableElements);
         // définit le premier et dernier élément pouvant recevoir le focus
         const firstElement = focusableModalElements[0];  // prevButton
@@ -199,7 +201,8 @@ function handleTabulationInLightbox(e) {
             // vérifie si le focus est à l'extérieur de la lightbox
         let isFocusOutsideLightbox = !lightbox.contains(document.activeElement);
         // vérifie si la touche shift est appuyée
-        let isShiftKeyPressed = e.shiftKey;
+        let isShiftKeyPressed = ev.key === 'shiftKey';
+        
         // vérifie sur quel élément le focus se fait actuellement
         let isFocusOnFirstElement = (document.activeElement === firstElement);
         let isFocusOnSecondElement = (document.activeElement === secondElement);
@@ -212,39 +215,43 @@ function handleTabulationInLightbox(e) {
             // si la touche shift est appuyée et que le focus est sur le premier élément,
             // donne le focus au dernier élément
             if (isShiftKeyPressed && isFocusOnFirstElement) {
-                e.preventDefault();
+                ev.preventDefault();
                 lastElement.focus();
             // si la touche shift n'est pas appuyée et que le focus est sur le premier élément,
             // donne le focus au second élément
             } else if (isFocusOnFirstElement && !isShiftKeyPressed) {
-                e.preventDefault();
+                ev.preventDefault();
                 secondElement.focus();
             // si la touche shift n'est pas appuyée et que le focus est sur le second élément,
             // donne le focus au dernier élément
             } else if (isFocusOnSecondElement && !isShiftKeyPressed) {
-                e.preventDefault();
+                ev.preventDefault();
                 lastElement.focus();
             // si la touche shift est appuyée et que le focus est sur le second élément,
             // donne le focus au premier élément
             } else if (isFocusOnSecondElement && isShiftKeyPressed) {
-                e.preventDefault();
+                ev.preventDefault();
                 firstElement.focus();
             // si la touche shift n'est pas appuyée et que le focus est sur le dernier élément,
             // donne le focus au premier élément
             } else if (isFocusOnLastElement && !isShiftKeyPressed) {
-                e.preventDefault();
+                ev.preventDefault();
                 firstElement.focus();
             // si la touche shift est appuyée et que le focus est sur le dernier élément,
             // donne le focus au second élément
             } else if (isFocusOnLastElement && isShiftKeyPressed) {
-                e.preventDefault();
+                ev.preventDefault();
                 secondElement.focus();
             }
         }
     }
 }
 // appelle de la fonction handleTabulationInLightbox si Tab ou Shift+Tab est appuyée
-document.addEventListener('keydown', handleTabulationInLightbox);
+document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Tab'){
+        handleTabulationInLightbox(e)
+    }
+});
 
 
 
@@ -272,8 +279,8 @@ function displayLightBoxWithOneMedia(media) {
     if(media.classList.contains('mediaArticleVideo')) {
         cloneMedia.setAttribute('controls', true);
     }
-
-    handleTabulationInLightbox();
+    cloneMedia.focus();
+    // handleTabulationInLightbox();
 }
 
 
@@ -332,14 +339,7 @@ function openLightbox(){
         displayMediaIndex(currentIndex);
     });
 
-    // const videoElement = document.querySelector('video');
-    // window.addEventListener('keydown', event =>{
-        
-    //     if (event.key === 'p'){
-    //         console.log('p');
-    //         videoElement.play();
-    //     }
-    // });
+
 };
 
 function displayMediaIndex(index){
@@ -354,9 +354,9 @@ function displayMediaIndex(index){
 
     if(allMedias[index].classList.contains('mediaArticleVideo')) {
         newMedia.setAttribute('controls', true);
-    }
-    
+    }    
     mediaLightbox.appendChild(newMedia);
+    newMedia.focus();
 
     // récupère l'id du media cloné
     let newMediaId = newMedia.getAttribute('id');
@@ -368,6 +368,7 @@ function displayMediaIndex(index){
     
     // ajoute le clone de pmediaContainer à la lightbox
     mediaLightbox.appendChild(pmediaContainerClone);
+    // newMedia.focus();
 };
 
 function closeLightbox(){
@@ -385,11 +386,11 @@ function closeLightbox(){
 
     // ferme la LB en appyant sur la touche espace
     document.addEventListener('keydown', (event) => {
-        if (event.key === ' ') {
+        if (event.key === 'Escape') {
+            event.preventDefault();
             lightbox.style.display = 'none';
             main.classList.remove('lightboxOpen');
             header.classList.remove('lightboxOpen');
-            event.preventDefault();
         }
     });
     
