@@ -60,6 +60,117 @@ function headerPhotographer(photographer){
 
 
 
+
+function createMenuSorting() {
+    const main = document.querySelector('main');
+
+    // Crée le conteneur principal
+    const menuContainer = document.createElement('div');
+    menuContainer.classList.add('menuContainer');
+
+    // Crée le label "Trier par"
+    const menuLabel = document.createElement('span');
+    menuLabel.classList.add('menuLabel');
+    menuLabel.innerText = 'Trier par: ';
+    menuContainer.appendChild(menuLabel);
+
+    const divMenuLister = document.createElement('div');
+    divMenuLister.classList.add('menuLister');
+    // Crée le bouton principal
+    const menuButton = document.createElement('div');
+    menuButton.classList.add('menuButton');
+    
+    // Crée le texte du bouton
+    const buttonText = document.createElement('span');
+    buttonText.innerText = 'Popularité';
+    menuButton.appendChild(buttonText);
+    
+    // Crée l'icône du bouton
+    const buttonIcon = document.createElement('i');
+    buttonIcon.classList.add('fas', 'fa-chevron-down');
+    menuButton.appendChild(buttonIcon);
+
+    menuContainer.appendChild(menuButton);
+
+    // Crée le menu déroulant
+    const openMenu = document.createElement('ul');
+    openMenu.classList.add('openMenu');
+
+    // Les options du menu
+    let options = ['Popularité', 'Date', 'Titre'];
+
+    // Met à jour les options du menu
+    const updateOptions = () => {
+        // Efface les options actuelles
+        openMenu.innerHTML = ''; 
+        // Parcours chaque option
+        for(let i = 0; i < options.length; i++) { 
+            // Si l'option n'est pas celle actuellement affichée
+            if (options[i] !== buttonText.innerText) { 
+                // Crée un nouvel élément de liste
+                const option = document.createElement('li'); 
+                option.innerText = options[i];
+                openMenu.appendChild(option);
+                // Quand l'option est cliquée
+                option.addEventListener('click', function() { 
+                    // Met à jour le texte du bouton
+                    buttonText.innerText = options[i]; 
+                    buttonIcon.className = '';
+                    // Met à jour l'icône
+                    buttonIcon.classList.add('fas', 'fa-chevron-down'); 
+                     // Ferme le menu
+                    openMenu.style.display = 'none';
+                    // Met à jour les options
+                    updateOptions(); 
+                });
+            }
+        }
+    }
+    // Appelle la fonction pour initialiser les options
+    updateOptions(); 
+
+    // Ajoute le menu déroulant au conteneur
+    menuContainer.appendChild(divMenuLister);
+    divMenuLister.appendChild(menuButton);
+    divMenuLister.appendChild(openMenu);
+
+    // Ajoute le conteneur au document
+    main.appendChild(menuContainer);
+
+    // Cache le menu par défaut
+    openMenu.style.display = 'none';
+
+    // Quand le bouton principal est cliqué
+    menuButton.addEventListener('click', function() {
+        // Si le menu est fermé
+        if (openMenu.style.display === 'none') { 
+            // Ouvre le menu
+            openMenu.style.display = 'block'; 
+            // Supprime toutes les classes de l'élément "buttonIcon"
+            buttonIcon.className = '';
+            // Met à jour l'icône
+            buttonIcon.classList.add('fas', 'fa-chevron-up');
+            divMenuLister.style.height = '55px';  
+        // Si le menu est ouvert
+        } else { 
+            // Ferme le menu
+            openMenu.style.display = 'none'; 
+            // Supprime toutes les classes de l'élément "buttonIcon"
+            buttonIcon.className = '';
+            // Met à jour l'icône
+            buttonIcon.classList.add('fas', 'fa-chevron-down');
+            divMenuLister.style.height = '55px'; 
+        }
+    });
+}
+
+// Appelle la fonction pour créer le menu
+createMenuSorting();
+
+
+
+
+
 // function displayMedia avec le parametre mediaPhotographer sert à boucler sur chaque media
 // correspondant à l'id du photographe
 function displayMedia(mediaPhotographer){
@@ -133,10 +244,7 @@ function updateTotalLikes(increment) {
     const newLikes = currentLikes + increment;
     // met à jour totalLikesElement pour afficher le nouveau nombre de likes suivi de l'icône de cœur
     totalLikesElement.innerHTML = `${newLikes} <i class="fa-solid fa-heart"></i>`; 
-
-}
-
-
+};
 
 
 
@@ -183,8 +291,8 @@ function createLightbox(){
 };
 
 
-function handleTabulationInLightbox(ev) {
-    console.log(ev);
+function handleTabulationInLightbox(e) {
+    console.log(e);
     // Sélection de tous les éléments qui peuvent recevoir le focus.
     const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     const lightbox = document.querySelector('.lightbox');
@@ -201,7 +309,7 @@ function handleTabulationInLightbox(ev) {
             // vérifie si le focus est à l'extérieur de la lightbox
         let isFocusOutsideLightbox = !lightbox.contains(document.activeElement);
         // vérifie si la touche shift est appuyée
-        let isShiftKeyPressed = ev.key === 'shiftKey';
+        let isShiftKeyPressed = e.key === 'shiftKey';
         
         // vérifie sur quel élément le focus se fait actuellement
         let isFocusOnFirstElement = (document.activeElement === firstElement);
@@ -215,32 +323,32 @@ function handleTabulationInLightbox(ev) {
             // si la touche shift est appuyée et que le focus est sur le premier élément,
             // donne le focus au dernier élément
             if (isShiftKeyPressed && isFocusOnFirstElement) {
-                ev.preventDefault();
+                e.preventDefault();
                 lastElement.focus();
             // si la touche shift n'est pas appuyée et que le focus est sur le premier élément,
             // donne le focus au second élément
             } else if (isFocusOnFirstElement && !isShiftKeyPressed) {
-                ev.preventDefault();
+                e.preventDefault();
                 secondElement.focus();
             // si la touche shift n'est pas appuyée et que le focus est sur le second élément,
             // donne le focus au dernier élément
             } else if (isFocusOnSecondElement && !isShiftKeyPressed) {
-                ev.preventDefault();
+                e.preventDefault();
                 lastElement.focus();
             // si la touche shift est appuyée et que le focus est sur le second élément,
             // donne le focus au premier élément
             } else if (isFocusOnSecondElement && isShiftKeyPressed) {
-                ev.preventDefault();
+                e.preventDefault();
                 firstElement.focus();
             // si la touche shift n'est pas appuyée et que le focus est sur le dernier élément,
             // donne le focus au premier élément
             } else if (isFocusOnLastElement && !isShiftKeyPressed) {
-                ev.preventDefault();
+                e.preventDefault();
                 firstElement.focus();
             // si la touche shift est appuyée et que le focus est sur le dernier élément,
             // donne le focus au second élément
             } else if (isFocusOnLastElement && isShiftKeyPressed) {
-                ev.preventDefault();
+                e.preventDefault();
                 secondElement.focus();
             }
         }
@@ -280,7 +388,6 @@ function displayLightBoxWithOneMedia(media) {
         cloneMedia.setAttribute('controls', true);
     }
     cloneMedia.focus();
-    // handleTabulationInLightbox();
 }
 
 
@@ -289,10 +396,6 @@ function openLightbox(){
     //récupérer les médias en fonction du photographe
     const allMedias = document.querySelectorAll('.mediaLB') ;
     let currentIndex = 0;
-    // const main = document.querySelector('main');
-    // const header = document.querySelector('header');
-    // const lightbox = document.querySelector('.lightbox');
-    // const mediaLightbox = document.querySelector('.mediaLightbox');
     const next = document.querySelector('.next');
     const prev = document.querySelector('.prev');
     
@@ -338,8 +441,7 @@ function openLightbox(){
         }
         displayMediaIndex(currentIndex);
     });
-
-
+    
 };
 
 function displayMediaIndex(index){
@@ -394,6 +496,7 @@ function closeLightbox(){
         }
     });
     
+    
 };
 
 // création d'une fonction init pour initialiser la page web
@@ -426,12 +529,9 @@ async function init(){
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
-    const medias = findMedia(photographerID, media);
-    
+    const medias = findMedia(photographerID, media);    
     boxLikesPrice(media, photographerID, photographer);
-
     displayMedia(medias);
-    // addLikes();
     createLightbox();
     openLightbox();
     closeLightbox();
@@ -440,3 +540,22 @@ async function init(){
 
 // j'instancie ma fonction init 
 init();
+
+function sortPopularityInMedia() {
+
+}
+
+
+async function sortMediasByPopularity() {
+    const dataJson = await dataPhotographers("../../data/photographers.json");
+    const {photographers, media} = dataJson;
+    const urlParams = new URLSearchParams(window.location.search);
+    const photographerID = parseInt (urlParams.get("id"));
+    const medias = findMedia(photographerID, media);
+    console.log(medias.sort(function (media1, media2){
+        console.log(media1.likes, media2.likes);
+        return media2.likes - media1.likes;
+    }));
+}
+
+sortMediasByPopularity();
