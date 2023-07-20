@@ -62,12 +62,12 @@ function headerPhotographer(photographer){
 
 
 function createMenuSorting() {
-    const main = document.querySelector('main');
+    const filters = document.querySelector('.filters');
 
     // Crée le conteneur principal
     const menuContainer = document.createElement('div');
     menuContainer.classList.add('menuContainer');
-
+    
     // Crée le label "Trier par"
     const menuLabel = document.createElement('span');
     menuLabel.classList.add('menuLabel');
@@ -79,10 +79,16 @@ function createMenuSorting() {
     // Crée le bouton principal
     const menuButton = document.createElement('div');
     menuButton.classList.add('menuButton');
+    //Focus au Tab
+    menuButton.setAttribute('role','group');
+    menuButton.setAttribute('tabindex', '0');
     
     // Crée le texte du bouton
     const buttonText = document.createElement('span');
     buttonText.innerText = 'Popularité';
+    //Focus au Tab
+    buttonText.setAttribute('role', 'listitem');
+
     menuButton.appendChild(buttonText);
     
     // Crée l'icône du bouton
@@ -110,6 +116,10 @@ function createMenuSorting() {
                 // Crée un nouvel élément de liste
                 const option = document.createElement('li'); 
                 option.innerText = options[i];
+                //Focus au Tab
+                option.setAttribute('role', 'listitem');
+                option.setAttribute('tabindex', '0');
+
                 openMenu.appendChild(option);
                 // Quand l'option est cliquée
                 option.addEventListener('click', function() { 
@@ -122,6 +132,22 @@ function createMenuSorting() {
                     openMenu.style.display = 'none';
                     // Met à jour les options
                     updateOptions(); 
+
+
+                    // Si l'option sélectionnée est 'Popularité', trie les médias
+                    if (options[i] === 'Popularité') {
+                        sortMediasByPopularity();
+                    }
+
+                    if (options[i] === 'Date') {
+                        sortMediasByDate();
+                    }
+                    
+                    if (options[i] === 'Titre') {
+                        sortMediasByTitle();
+                    }
+                    
+
                 });
             }
         }
@@ -135,7 +161,7 @@ function createMenuSorting() {
     divMenuLister.appendChild(openMenu);
 
     // Ajoute le conteneur au document
-    main.appendChild(menuContainer);
+    filters.appendChild(menuContainer);
 
     // Cache le menu par défaut
     openMenu.style.display = 'none';
@@ -192,6 +218,7 @@ function displayMedia(mediaPhotographer){
             }
         });
     });
+    createLightbox();
 };
 
 
@@ -215,16 +242,20 @@ function boxLikesPrice(medias, photographerID, photographers) {
     // Création de l'encart
     const floatingBox = document.createElement('div');
     floatingBox.classList.add('floating-box');
+    floatingBox.setAttribute('role', 'presentation');
+    floatingBox.setAttribute('tabindex', '0');
 
     // Ajout du nombre total de likes
     const likesElement = document.createElement('p');
     likesElement.innerHTML = `${totalLikes} <i class="fa-solid fa-heart"></i>`;
+    likesElement.setAttribute('aria-label', `${totalLikes} likes`);
     floatingBox.appendChild(likesElement);
     // j'affecte l'élément à totalLikesElement
     totalLikesElement = likesElement;  
 
     const priceElement = document.createElement('p');
     priceElement.textContent = `${photographers.price} €/jour`;
+    priceElement.setAttribute('aria-label', `${photographers.price} euros par jour`);
     floatingBox.appendChild(priceElement);
 
     // Ajout de l'encart au body de la page
@@ -383,10 +414,17 @@ function displayLightBoxWithOneMedia(media) {
     mediaLightbox.innerHTML = "";
     mediaLightbox.appendChild(cloneMedia); 
     mediaLightbox.appendChild(pmediaContainerClone);
+
     // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
     if(media.classList.contains('mediaArticleVideo')) {
         cloneMedia.setAttribute('controls', true);
     }
+
+    // // Focus on media title
+    // const mediaTitle = pmediaContainerClone;
+    // mediaTitle.setAttribute('tabindex', '4'); // ----------------------------------------------------------------------------
+    // mediaTitle.focus();
+
     cloneMedia.focus();
 }
 
@@ -470,7 +508,7 @@ function displayMediaIndex(index){
     
     // ajoute le clone de pmediaContainer à la lightbox
     mediaLightbox.appendChild(pmediaContainerClone);
-    // newMedia.focus();
+    
 };
 
 function closeLightbox(){
@@ -541,21 +579,51 @@ async function init(){
 // j'instancie ma fonction init 
 init();
 
-function sortPopularityInMedia() {
-
+// Fonction commune pour éviter la répétition du code
+async function sortAndDisplayMedia(sorting) {
+    const dataJson = await dataPhotographers("../../data/photographers.json");
+    const { media } = dataJson;
+    const urlParams = new URLSearchParams(window.location.search);
+    const photographerID = parseInt(urlParams.get("id"));
+    const medias = findMedia(photographerID, media);
+    //Tri le tableau medias avec le paramètre 'sorting' pour comparer les éléments
+    //Stock du tableau dans 'sortedMedias'
+    const sortedMedias = medias.sort(sorting);
+    const mediaSection = document.querySelector('#media-photographer');
+    // Je vide le conteneur de médias pour éviter les doublons
+    mediaSection.innerHTML = '';
+    displayMedia(sortedMedias);
+    createLightbox();
+    openLightbox();
+    closeLightbox();
 }
-
 
 async function sortMediasByPopularity() {
-    const dataJson = await dataPhotographers("../../data/photographers.json");
-    const {photographers, media} = dataJson;
-    const urlParams = new URLSearchParams(window.location.search);
-    const photographerID = parseInt (urlParams.get("id"));
-    const medias = findMedia(photographerID, media);
-    console.log(medias.sort(function (media1, media2){
-        console.log(media1.likes, media2.likes);
-        return media2.likes - media1.likes;
-    }));
+    //Tri par rapport aux likes
+    //'await' de l'async pour exécuter ce code
+    //comparaison des media1 et media2 en boucle pour tous les médias par défaut dans l'ordre croissant
+    //ici je retourne le résultat par ordre décroissant en mettant media2 avant media1 et avec le - 
+    await sortAndDisplayMedia((media1, media2) => media2.likes - media1.likes);
 }
 
+//Appel de la fonction pour avoir le tri dès l'ouverture de la page
 sortMediasByPopularity();
+
+async function sortMediasByDate() {
+    //Tri par rapport aux dates
+    //conversion de la string date du JSON en objet avec new Date
+    //Et place dans l'ordre décroissant les dates 
+    await sortAndDisplayMedia((media1, media2) => new Date(media2.date) - new Date(media1.date));
+}
+
+async function sortMediasByTitle() {
+    //Tri par rapport aux titres
+    //Méthode .localeCompare() qui compare deux strings par ordre alphabétique
+    //Ici je compare les title de media1 et media2 et n'inverse pas le sens de tri
+    await sortAndDisplayMedia((media1, media2) => media1.title.localeCompare(media2.title));
+}
+
+
+
+
+
