@@ -281,11 +281,13 @@ function updateTotalLikes(increment) {
 
 function createLightbox(){
     const body = document.querySelector('body');
+
     const lightbox = document.createElement('dialog');
+
     lightbox.setAttribute('tabindex', '0');  // Rend la lightbox focusable
 
     const mediaLightbox = document.createElement('div');
-    const videoLightbox = document.createElement('video'); //----------
+    const videoLightbox = document.createElement('video'); 
     const prev = document.createElement('button');
     const next = document.createElement('button');
     const closeLb = document.createElement('button');
@@ -293,10 +295,13 @@ function createLightbox(){
 
     lightbox.classList.add('lightbox');
     mediaLightbox.classList.add('mediaLightbox');
+    mediaLightbox.setAttribute('role', 'dialog');
     videoLightbox.setAttribute('controls', true);
     videoLightbox.setAttribute('tabindex', '-1');
     prev.classList.add('prev', "fas", "fa-angle-left");
     prev.setAttribute('aria-label','Média précédent');   
+    
+    
     next.classList.add('next', "fas", "fa-angle-right");
     next.setAttribute('aria-label','Média suivant');
     closeLb.classList.add('closeLb');
@@ -314,7 +319,7 @@ function createLightbox(){
 
     body.appendChild(lightbox);
     lightbox.appendChild(mediaLightbox);
-    mediaLightbox.appendChild(videoLightbox); //-----------
+    mediaLightbox.appendChild(videoLightbox); 
     lightbox.appendChild(prev);
     lightbox.appendChild(next);
     lightbox.appendChild(closeLb);
@@ -323,7 +328,6 @@ function createLightbox(){
 
 
 function handleTabulationInLightbox(e) {
-    console.log(e);
     // Sélection de tous les éléments qui peuvent recevoir le focus.
     const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     const lightbox = document.querySelector('.lightbox');
@@ -398,13 +402,13 @@ function displayLightBoxWithOneMedia(media) {
     const lightbox = document.querySelector('.lightbox');
     const main = document.querySelector('main');
     const header = document.querySelector('header');
-    const mediaLightbox = document.querySelector('.mediaLightbox');
-
-    const cloneMedia = media.cloneNode(false);
+    const mediaLightbox = document.querySelector('.mediaLightbox'); 
+    const cloneMedia = media.cloneNode(false);  
     const mediaId = media.getAttribute('id');
     const pMediaContainerid = 'pmediacontainer_' + mediaId.split('_')[1];
     const pmediaContainerClone = document.getElementById(pMediaContainerid).cloneNode(true);
-
+    
+    
     lightbox.style.display = 'block';
     // ajoute la classe 'lightboxOpen' à l'élément 'main'
     main.classList.add('lightboxOpen');
@@ -418,14 +422,10 @@ function displayLightBoxWithOneMedia(media) {
     // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
     if(media.classList.contains('mediaArticleVideo')) {
         cloneMedia.setAttribute('controls', true);
-    }
+        cloneMedia.setAttribute('aria-label', `${media.title}`);
+        cloneMedia.focus();
+    } 
 
-    // // Focus on media title
-    // const mediaTitle = pmediaContainerClone;
-    // mediaTitle.setAttribute('tabindex', '4'); // ----------------------------------------------------------------------------
-    // mediaTitle.focus();
-
-    cloneMedia.focus();
 }
 
 
@@ -440,11 +440,11 @@ function openLightbox(){
     //Gestion des images / video
     //boucler sur tous ces médias
     //getMedia = un media contenu dans linksMedia
-    allMedias.forEach((getMedia, index)=>{
+    allMedias.forEach((getMedia, index)=>{ 
         //ajout d'un event au click
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
-            currentIndex = index; //----------------------------------
+            currentIndex = index; 
             displayLightBoxWithOneMedia(getMedia);
         });
     });
@@ -456,7 +456,9 @@ function openLightbox(){
             currentIndex = 0;
         }
         displayMediaIndex(currentIndex);
+        
     });
+    
 
     // navigation avec les fleches du clavier dans la LB
     document.addEventListener('keydown', event =>{
@@ -488,15 +490,19 @@ function displayMediaIndex(index){
     const mediaLightbox = document.querySelector('.mediaLightbox');
     // vide le contenu de la lightbox
     mediaLightbox.innerHTML = "";
-    console.log(index);
+    
     // cloner le media à l'index spécifié et l'ajoute à la lightbox
     const newMedia = allMedias[index].cloneNode(true);
 
     if(allMedias[index].classList.contains('mediaArticleVideo')) {
         newMedia.setAttribute('controls', true);
-    }    
+    } else if(allMedias[index].classList.contains('mediaArticle')) {
+        newMedia.setAttribute('aria-label', `${allMedias[index].title}`);
+    }
     mediaLightbox.appendChild(newMedia);
     newMedia.focus();
+
+    
 
     // récupère l'id du media cloné
     let newMediaId = newMedia.getAttribute('id');
@@ -567,12 +573,14 @@ async function init(){
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
-    const medias = findMedia(photographerID, media);    
+    // const medias = findMedia(photographerID, media);    
     boxLikesPrice(media, photographerID, photographer);
-    displayMedia(medias);
-    createLightbox();
-    openLightbox();
-    closeLightbox();
+    // displayMedia(medias);
+    // createLightbox();
+    // openLightbox();
+    // closeLightbox();
+    //Appel de la fonction pour avoir le tri dès l'ouverture de la page
+    sortMediasByPopularity();
 };
 
 
@@ -606,8 +614,7 @@ async function sortMediasByPopularity() {
     await sortAndDisplayMedia((media1, media2) => media2.likes - media1.likes);
 }
 
-//Appel de la fonction pour avoir le tri dès l'ouverture de la page
-sortMediasByPopularity();
+
 
 async function sortMediasByDate() {
     //Tri par rapport aux dates

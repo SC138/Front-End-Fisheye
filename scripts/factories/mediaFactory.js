@@ -15,11 +15,13 @@ function mediaFactory(media, index, updateTotalLikes) {
 
         const pMedia = document.createElement('p');
         pMedia.setAttribute('id', `pmediacontainer_${index}`);
+        // pMedia.setAttribute('aria-label', media.title);
         pMedia.classList.add('pMedia');
         pMedia.textContent = title;
 
         const pLikes = document.createElement('p');
         pLikes.classList.add('pLikes');
+
 
         const likesCount = document.createElement('span');
         likesCount.textContent = likes;
