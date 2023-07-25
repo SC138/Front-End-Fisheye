@@ -20,7 +20,7 @@ const generatephotographerCard = (onePhotographer)=>{
 
     //création d'un élément 'a' pour un lien
     const link = document.createElement('a');
-    link.setAttribute('aria-label', `${city}, ${country}, ${tagline}, ${price}` );
+    link.setAttribute('aria-label', `${name}, ${city}, ${country}, ${tagline}, ${price} € par jour` );
     // ajout d'un attribut qui permet de cibler dynamiquement l'id d'un photographe
     link.setAttribute("href", `photographer.html?id=${id}`)
 
