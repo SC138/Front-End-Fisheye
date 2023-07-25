@@ -550,12 +550,8 @@ async function init(){
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
-    // const medias = findMedia(photographerID, media);    
     boxLikesPrice(media, photographerID, photographer);
-    // displayMedia(medias);
-    // createLightbox();
-    // openLightbox();
-    // closeLightbox();
+
     //Appel de la fonction pour avoir le tri dès l'ouverture de la page
     sortMediasByPopularity();
 };
