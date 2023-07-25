@@ -2,11 +2,13 @@ function mediaFactory(media, index, updateTotalLikes) {
     const {id, photographerId, title, image, video, likes, date, price} = media;
     const mediaImage = `assets/images/photos/${photographerId}/${image}`;
     const mediaVideo = `assets/images/photos/${photographerId}/${video}`;
-
+    
     function photosUserDOM() {
+// 
         const article = document.createElement('article');
         const link = document.createElement('a');
         article.classList.add('picsPhotographer');
+        link.setAttribute('aria-label', `${title} aimé ${likes} fois`);
         article.appendChild(link);
 
         const mediaContainer = document.createElement('div');

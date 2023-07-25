@@ -68,6 +68,7 @@ function createMenuSorting() {
     const menuContainer = document.createElement('div');
     menuContainer.classList.add('menuContainer');
     
+    
     // Crée le label "Trier par"
     const menuLabel = document.createElement('span');
     menuLabel.classList.add('menuLabel');
@@ -86,6 +87,8 @@ function createMenuSorting() {
     // Crée le texte du bouton
     const buttonText = document.createElement('span');
     buttonText.innerText = 'Popularité';
+    buttonText.setAttribute('aria-label', `Trier les médias par ${buttonText.innerText}`);
+
     //Focus au Tab
     buttonText.setAttribute('role', 'listitem');
 
@@ -136,14 +139,17 @@ function createMenuSorting() {
 
                     // Si l'option sélectionnée est 'Popularité', trie les médias
                     if (options[i] === 'Popularité') {
+                        buttonText.setAttribute('aria-label', `Trier les médias par ${buttonText.innerText}`);
                         sortMediasByPopularity();
                     }
 
                     if (options[i] === 'Date') {
+                        buttonText.setAttribute('aria-label', `Trier les médias par ${buttonText.innerText}`);
                         sortMediasByDate();
                     }
                     
                     if (options[i] === 'Titre') {
+                        buttonText.setAttribute('aria-label', `Trier les médias par ${buttonText.innerText}`);
                         sortMediasByTitle();
                     }
                     
@@ -318,83 +324,57 @@ function createLightbox(){
     
 
     body.appendChild(lightbox);
+    lightbox.appendChild(prev);
     lightbox.appendChild(mediaLightbox);
     mediaLightbox.appendChild(videoLightbox); 
-    lightbox.appendChild(prev);
     lightbox.appendChild(next);
     lightbox.appendChild(closeLb);
     closeLb.appendChild(icons);
 };
 
-
+//Focus dans la lightbox
 function handleTabulationInLightbox(e) {
     // Sélection de tous les éléments qui peuvent recevoir le focus.
-    const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusableElements = 'button, select, textarea, [tabindex]:not([tabindex="-1"]), div';
     const lightbox = document.querySelector('.lightbox');
+    
     //si la LB est affichée
-    //&& e.key === 'Tab'
     if(lightbox.style.display !== "none") {
         // séléction des éléments pouvant recevoir le focus dans la LB
-        const focusableModalElements = lightbox.querySelectorAll(focusableElements);
+        const focusableModalElements = Array.from(lightbox.querySelectorAll(focusableElements));
+
+        //verifie si la touche Tab est préssée
+        const tabKey = e.key === 'Tab';
+        // si la touche est différente de Tab, ça échappe la touche
+        if(!tabKey) {
+            return;
+        } 
+
         // définit le premier et dernier élément pouvant recevoir le focus
-        const firstElement = focusableModalElements[0];  // prevButton
-        const secondElement = focusableModalElements[1];  // nextButton
-        const lastElement = focusableModalElements[focusableModalElements.length - 1];  // closeButton
-
-            // vérifie si le focus est à l'extérieur de la lightbox
+        const firstElement = focusableModalElements[0]; // prev
+        const lastElement = focusableModalElements[focusableModalElements.length -1]; //close
+        // différent de lightbox doc.activeElmement(=focusableElements)
         let isFocusOutsideLightbox = !lightbox.contains(document.activeElement);
-        // vérifie si la touche shift est appuyée
-        let isShiftKeyPressed = e.key === 'shiftKey';
-        
-        // vérifie sur quel élément le focus se fait actuellement
-        let isFocusOnFirstElement = (document.activeElement === firstElement);
-        let isFocusOnSecondElement = (document.activeElement === secondElement);
-        let isFocusOnLastElement = (document.activeElement === lastElement);
 
-        // si le focus est à l'extérieur de la lightbox, donne le focus au premier élément
-        if (isFocusOutsideLightbox) {
-            firstElement.focus();
+        //si shift+Tab 
+        if(e.shiftKey) {
+            //si focus sur 1er élément, alors aller au dernier élément 
+            if(document.activeElement === firstElement) {
+                lastElement.focus();
+                e.preventDefault();
+            }
+        // sinon on passe à l'élément suivant     
         } else {
-            // si la touche shift est appuyée et que le focus est sur le premier élément,
-            // donne le focus au dernier élément
-            if (isShiftKeyPressed && isFocusOnFirstElement) {
-                e.preventDefault();
-                lastElement.focus();
-            // si la touche shift n'est pas appuyée et que le focus est sur le premier élément,
-            // donne le focus au second élément
-            } else if (isFocusOnFirstElement && !isShiftKeyPressed) {
-                e.preventDefault();
-                secondElement.focus();
-            // si la touche shift n'est pas appuyée et que le focus est sur le second élément,
-            // donne le focus au dernier élément
-            } else if (isFocusOnSecondElement && !isShiftKeyPressed) {
-                e.preventDefault();
-                lastElement.focus();
-            // si la touche shift est appuyée et que le focus est sur le second élément,
-            // donne le focus au premier élément
-            } else if (isFocusOnSecondElement && isShiftKeyPressed) {
-                e.preventDefault();
+            // si le focus est sur le dernier élément OU un elm en dehors de la LB
+            //alors on focus le 1er elm 
+            if(document.activeElement === lastElement || isFocusOutsideLightbox) {
                 firstElement.focus();
-            // si la touche shift n'est pas appuyée et que le focus est sur le dernier élément,
-            // donne le focus au premier élément
-            } else if (isFocusOnLastElement && !isShiftKeyPressed) {
                 e.preventDefault();
-                firstElement.focus();
-            // si la touche shift est appuyée et que le focus est sur le dernier élément,
-            // donne le focus au second élément
-            } else if (isFocusOnLastElement && isShiftKeyPressed) {
-                e.preventDefault();
-                secondElement.focus();
             }
         }
     }
 }
-// appelle de la fonction handleTabulationInLightbox si Tab ou Shift+Tab est appuyée
-document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Tab'){
-        handleTabulationInLightbox(e)
-    }
-});
+
 
 
 
@@ -414,18 +394,19 @@ function displayLightBoxWithOneMedia(media) {
     main.classList.add('lightboxOpen');
     // ajoute la classe 'lightboxOpen' à l'élément 'header'
     header.classList.add('lightboxOpen');
+    
     // vide le contenu de l'élément 'mediaLightbox'
     mediaLightbox.innerHTML = "";
     mediaLightbox.appendChild(cloneMedia); 
     mediaLightbox.appendChild(pmediaContainerClone);
 
-    // ajoute une copie (clone) de l'élément 'getMedia' à l'élément 'mediaLightbox'
-    if(media.classList.contains('mediaArticleVideo')) {
+    // écouteur d'event sur keydown pour déclencher l'appel de handleTabulationInLightbox
+    document.addEventListener('keydown', handleTabulationInLightbox);
+    // si la source du média se termine ps .mp4
+    //alors ajout des controls à la vidéo 
+    if(media.src.endsWith('.mp4')) {
         cloneMedia.setAttribute('controls', true);
-        cloneMedia.setAttribute('aria-label', `${media.title}`);
-        cloneMedia.focus();
     } 
-
 }
 
 
@@ -436,15 +417,20 @@ function openLightbox(){
     let currentIndex = 0;
     const next = document.querySelector('.next');
     const prev = document.querySelector('.prev');
-    
+    const mediaLightbox = document.querySelector('.mediaLightbox');
+
     //Gestion des images / video
     //boucler sur tous ces médias
     //getMedia = un media contenu dans linksMedia
     allMedias.forEach((getMedia, index)=>{ 
         //ajout d'un event au click
+        
         getMedia.addEventListener('click',(e) =>{
             e.preventDefault();
-            currentIndex = index; 
+            currentIndex = index;
+            mediaLightbox.setAttribute('tabindex', '0');
+            prev.setAttribute('tabindex', '0');
+            next.setAttribute('tabindex', '0');
             displayLightBoxWithOneMedia(getMedia);
         });
     });
@@ -455,10 +441,8 @@ function openLightbox(){
             //réinitialiser currentIndex à 0
             currentIndex = 0;
         }
-        displayMediaIndex(currentIndex);
-        
-    });
-    
+        displayMediaIndex(currentIndex);  
+    });  
 
     // navigation avec les fleches du clavier dans la LB
     document.addEventListener('keydown', event =>{
@@ -481,7 +465,6 @@ function openLightbox(){
         }
         displayMediaIndex(currentIndex);
     });
-    
 };
 
 function displayMediaIndex(index){
@@ -494,16 +477,8 @@ function displayMediaIndex(index){
     // cloner le media à l'index spécifié et l'ajoute à la lightbox
     const newMedia = allMedias[index].cloneNode(true);
 
-    if(allMedias[index].classList.contains('mediaArticleVideo')) {
-        newMedia.setAttribute('controls', true);
-    } else if(allMedias[index].classList.contains('mediaArticle')) {
-        newMedia.setAttribute('aria-label', `${allMedias[index].title}`);
-    }
     mediaLightbox.appendChild(newMedia);
-    newMedia.focus();
-
     
-
     // récupère l'id du media cloné
     let newMediaId = newMedia.getAttribute('id');
     let idNumber = newMediaId.split('_')[1];
@@ -539,8 +514,6 @@ function closeLightbox(){
             header.classList.remove('lightboxOpen');
         }
     });
-    
-    
 };
 
 // création d'une fonction init pour initialiser la page web
@@ -570,6 +543,10 @@ async function init(){
     const photographerName = document.querySelector(".photographer_name");
     // j'affecte l'objet photographer.name comme étant le texte à afficher
     photographerName.textContent = photographer.name;
+
+    // ajout dynamique du nom du photographe pour la lecture d'écran sur le bouton de contact
+    const contact_button = document.querySelector(".contact_button");
+    contact_button.setAttribute('aria-label', `Contactez-moi ${photographer.name}`);
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
     // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
