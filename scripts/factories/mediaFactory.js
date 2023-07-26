@@ -3,8 +3,7 @@ function mediaFactory(media, index, updateTotalLikes) {
     const mediaImage = `assets/images/photos/${photographerId}/${image}`;
     const mediaVideo = `assets/images/photos/${photographerId}/${video}`;
     
-    function photosUserDOM() {
-// 
+    function photosUserDOM() { 
         const article = document.createElement('article');
         const link = document.createElement('a');
         article.classList.add('picsPhotographer');
@@ -17,7 +16,6 @@ function mediaFactory(media, index, updateTotalLikes) {
 
         const pMedia = document.createElement('p');
         pMedia.setAttribute('id', `pmediacontainer_${index}`);
-        // pMedia.setAttribute('aria-label', media.title);
         pMedia.classList.add('pMedia');
         pMedia.textContent = title;
 

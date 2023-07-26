@@ -548,7 +548,6 @@ async function init(){
     const contact_button = document.querySelector(".contact_button");
     contact_button.setAttribute('aria-label', `Contactez-moi ${photographer.name}`);
     // j'instancie ma fonction headerPhotographer avec le paramètre photographer qui contient les information du photographe 
-    // extrait en fonction de son ID (voir ligne 88)
     headerPhotographer(photographer);
     boxLikesPrice(media, photographerID, photographer);
 
