@@ -30,6 +30,11 @@
     cursor: pointer;
 }
 
+.contact_button:hover {
+    background-color: #DB8876;
+    color: black;
+}
+
 .photograph-header img{
     width: 360px;
     aspect-ratio: 1/1;
