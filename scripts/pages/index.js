@@ -1,4 +1,3 @@
-    // import { photographerFactory } from "../factories/photographerFactory.js";
     import {generatephotographerCard} from "../domgenerator/photographerCard.js";
     // va récupérer les infos du json
     // déclaration d'une fonction asyncrone getPhotographers
@@ -11,11 +10,12 @@
         const photographers = data.photographers;
         // je retournes les photographes pour qu'ils s'affichent
         return photographers;
-    };
+    }
 
-    // déclaration d'une fonction asyncrone displayData avec le paramètre (photographers)
+    // déclaration d'une fonction asyncrone displayData avec le paramètre (photographers) pour afficher les données des photographes
     async function displayData(photographers) {
         // je fais une requête de selection sur la classe .photographer_section
+        // et génére une carte correspondante
         const photographersSection = document.querySelector(".photographer_section");
 
         // je fais une boucle forEach pour passer sur chaque éléments du tableau photographers
@@ -26,18 +26,17 @@
             // (voir photographerFactory.js ligne 10)
             // pour afficher les data du photographe
             // getUserCardDOM définit la carte du photographe (structuration des données dans le DOM)
-            // const userCardDOM = generatephotographerCard(photographer); <--------------------
             // ajout de l'enfant userCardDOM (appendChild) au container parent photographersSection
             photographersSection.appendChild(generatephotographerCard(photographer));
         });
-    };
+    }
 
     async function init() {
         // Récupère les datas des photographes
         const photographers = await getPhotographers();
         // j'appel ma fonction displayData pour afficher les photographes
         displayData(photographers);
-    };
+    }
     
     // j'instancie ma fonction init 
     init();

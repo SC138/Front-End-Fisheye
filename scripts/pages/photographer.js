@@ -5,7 +5,7 @@ async function dataPhotographers(file){
     const response = await fetch (file);
     const datas = await response.json();
     return datas;
-};
+}
 
 // je créer la function findPhotographer avec les paramètres : photographers, id
 function findPhotographer(photographers, id){
@@ -15,7 +15,7 @@ function findPhotographer(photographers, id){
     const photographer = photographers.find(photographer => photographer.id === id);
     // je retourne le photographe pour qu'il s'affiche
     return photographer;
-};
+}
 
 function headerPhotographer(photographer){
     const photographHeader = document.querySelector(".photograph-header");
@@ -56,7 +56,7 @@ function headerPhotographer(photographer){
     photographHeader.appendChild(h2);
     photographHeader.appendChild(location);
     photographHeader.appendChild(catchline);
-};
+}
 
 
 
@@ -225,14 +225,14 @@ function displayMedia(mediaPhotographer){
         });
     });
     createLightbox();
-};
+}
 
 
 function findMedia(photographerID, medias){
     // Filtrer les médias par photographerID
     const mediasPhotographer = medias.filter(media => media.photographerId === photographerID);
     return mediasPhotographer;
-};
+}
 
 
 function boxLikesPrice(medias, photographerID, photographers) {
@@ -267,7 +267,7 @@ function boxLikesPrice(medias, photographerID, photographers) {
     // Ajout de l'encart au body de la page
     const main = document.querySelector('main');
     main.appendChild(floatingBox);
-};
+}
 
 let totalLikesElement;
 
@@ -281,7 +281,7 @@ function updateTotalLikes(increment) {
     const newLikes = currentLikes + increment;
     // met à jour totalLikesElement pour afficher le nouveau nombre de likes suivi de l'icône de cœur
     totalLikesElement.innerHTML = `${newLikes} <i class="fa-solid fa-heart"></i>`; 
-};
+}
 
 
 
@@ -302,10 +302,11 @@ function createLightbox(){
     lightbox.classList.add('lightbox');
     mediaLightbox.classList.add('mediaLightbox');
     mediaLightbox.setAttribute('role', 'dialog');
-    videoLightbox.setAttribute('controls', true);
+    videoLightbox.setAttribute('controls', true);   
     videoLightbox.setAttribute('tabindex', '-1');
     prev.classList.add('prev', "fas", "fa-angle-left");
     prev.setAttribute('aria-label','Média précédent');   
+
     
     
     next.classList.add('next', "fas", "fa-angle-right");
@@ -330,7 +331,7 @@ function createLightbox(){
     lightbox.appendChild(next);
     lightbox.appendChild(closeLb);
     closeLb.appendChild(icons);
-};
+}
 
 //Focus dans la lightbox
 function handleTabulationInLightbox(e) {
@@ -377,7 +378,8 @@ function handleTabulationInLightbox(e) {
 
 
 
-
+//fonction qui permet d'afficher une lightbox contenant un média spécifique (image ou vidéo), 
+// de gérer le focus au sein de celle-ci, et d'ajouter les contrôles pour une vidéo si nécessaire.
 function displayLightBoxWithOneMedia(media) {
     const lightbox = document.querySelector('.lightbox');
     const main = document.querySelector('main');
@@ -402,13 +404,12 @@ function displayLightBoxWithOneMedia(media) {
 
     // écouteur d'event sur keydown pour déclencher l'appel de handleTabulationInLightbox
     document.addEventListener('keydown', handleTabulationInLightbox);
-    // si la source du média se termine ps .mp4
+    // si la source du média se termine par .mp4
     //alors ajout des controls à la vidéo 
-    if(media.src.endsWith('.mp4')) {
+    if(media.classList.contains('mediaArticleVideo')) {
         cloneMedia.setAttribute('controls', true);
     } 
 }
-
 
 
 function openLightbox(){
@@ -418,7 +419,7 @@ function openLightbox(){
     const next = document.querySelector('.next');
     const prev = document.querySelector('.prev');
     const mediaLightbox = document.querySelector('.mediaLightbox');
-
+    
     //Gestion des images / video
     //boucler sur tous ces médias
     //getMedia = un media contenu dans linksMedia
@@ -465,8 +466,11 @@ function openLightbox(){
         }
         displayMediaIndex(currentIndex);
     });
-};
+}
 
+
+//fonction qui permet d'afficher un média spécifique dans la lightbox, en fonction de son index dans la collection de médias présents sur la page. 
+//Elle vide d'abord la lightbox, clone le média spécifié et son conteneur associé, puis les ajoute à la lightbox.
 function displayMediaIndex(index){
     // sélectionne tous les médias et le conteneur de la lightbox
     const allMedias = document.querySelectorAll('.mediaLB');
@@ -476,6 +480,10 @@ function displayMediaIndex(index){
     
     // cloner le media à l'index spécifié et l'ajoute à la lightbox
     const newMedia = allMedias[index].cloneNode(true);
+    
+    if(allMedias[index].classList.contains('mediaArticleVideo')) {
+        newMedia.setAttribute('controls', true);
+    }
 
     mediaLightbox.appendChild(newMedia);
     
@@ -490,7 +498,7 @@ function displayMediaIndex(index){
     // ajoute le clone de pmediaContainer à la lightbox
     mediaLightbox.appendChild(pmediaContainerClone);
     
-};
+}
 
 function closeLightbox(){
     const btnCloseLb = document.querySelector('.closeLb');
@@ -514,7 +522,7 @@ function closeLightbox(){
             header.classList.remove('lightboxOpen');
         }
     });
-};
+}
 
 // création d'une fonction init pour initialiser la page web
 // la fonction est créée de manière asyncrone pour attendre les données
@@ -553,7 +561,7 @@ async function init(){
 
     //Appel de la fonction pour avoir le tri dès l'ouverture de la page
     sortMediasByPopularity();
-};
+}
 
 
 // j'instancie ma fonction init 

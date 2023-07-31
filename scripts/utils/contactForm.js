@@ -97,10 +97,7 @@ formElement.addEventListener("submit", (event) => {
     let email = document.getElementById("email").value;
     let message = document.getElementById("message").value;
     // j'affiche les résultats dans la console
-    console.log(firstValue);
-    console.log(lastValue);
-    console.log(email);
-    console.log(message);
+    console.log(firstValue, lastValue, email, message);
     // j'indique que isSubmited est true
     isSubmited = true;
 });

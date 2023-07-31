@@ -1,9 +1,13 @@
+
+// Factory pour générer des éléments de média
 function mediaFactory(media, index, updateTotalLikes) {
-    const {id, photographerId, title, image, video, likes, date, price} = media;
+    const {id, photographerId, title, image, video, likes} = media;
     const mediaImage = `assets/images/photos/${photographerId}/${image}`;
     const mediaVideo = `assets/images/photos/${photographerId}/${video}`;
     
-    function photosUserDOM() { 
+    // Génère l'élément DOM pour un média spécifique
+    function photosUserDOM() {
+        // Création des différents éléments du DOM 
         const article = document.createElement('article');
         const link = document.createElement('a');
         article.classList.add('picsPhotographer');
@@ -30,13 +34,14 @@ function mediaFactory(media, index, updateTotalLikes) {
         const heartIcon = document.createElement('i');
         heartIcon.className = "fa-solid fa-heart";
 
-        //ajout des éléments qui contiennnt le nombre de likes et le coeur à pLikes
+        //ajout des éléments qui contiennent le nombre de likes et le coeur à pLikes
         pLikes.appendChild(likesCount);
         pLikes.appendChild(heartIcon);
 
+
+        // Gestion des événements de like
         //variable pour vérifier si le coeur est cliqué ou pas
         let likeState = false;
-
         // ajout écouteur d'event sur le coeur qui se déclenche au click 
         heartIcon.addEventListener('click', function() {
             // inverse l'état de la variable au click (true devient false et inversement)
@@ -56,10 +61,12 @@ function mediaFactory(media, index, updateTotalLikes) {
             }
         });
 
+        // Assemblage de la structure du DOM
         article.appendChild(mediaContainer);
         mediaContainer.appendChild(pMedia);
         mediaContainer.appendChild(pLikes);
 
+        // Ajout de l'image ou de la vidéo
         if(image){
             link.setAttribute('href',mediaImage);
             link.setAttribute('data-id', id);
@@ -79,6 +86,7 @@ function mediaFactory(media, index, updateTotalLikes) {
             movie.setAttribute("src", mediaVideo);
             movie.setAttribute("class", "mediaArticleVideo mediaLB");
             movie.setAttribute("aria-label", `${title}`);
+            
             link.appendChild(movie);
         }
         return article;

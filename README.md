@@ -1,6 +1,8 @@
-# Base de code du projet P6 - Parcours Front-end
+# Projet P6 - Parcours Front-end : Fish Eye
 
-## Démarrer le projet
+## Projet d'un site accessible de photographes
 
-Rien à installer ici, il suffit d'ouvrir le fichier `index.html`.
+Ce projet est essentiellement fait en JavaScript vannilla, accès sur l'accessibilité. 
+Il est entièrement utilisable au clavier avec ou sans lecteur d'écran.
+
 
