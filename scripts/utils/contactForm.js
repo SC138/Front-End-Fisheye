@@ -2,14 +2,16 @@ const formElement = document.querySelector("form");
 const contact_button = document.querySelector(".contact_button");
 const close_button = document.querySelector(".close_btn");
 const contact_modal = document.getElementById("contact_modal");
-
-// ajout des éléments à l'intérieur de la modal à focus 
 const focusableElements = 'button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-const modalContact = document.querySelector('.modal');
 //Sélectionne le premier élément qui peut recevoir le focus dans la modale.
+const modalContact = document.querySelector('.modal');
 const firstFocusableElement = modalContact.querySelectorAll(focusableElements)[0]; 
 const focusableContent = modalContact.querySelectorAll(focusableElements);
 const lastFocusableElement = focusableContent[focusableContent.length - 1];
+
+// ajout des éléments à l'intérieur de la modal à focus 
+// let focusableElements = document.querySelectorAll('button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+
 
 // ouverture modal form
 function displayModal() {
@@ -25,7 +27,7 @@ function displayModal() {
         if (!modalContact.contains(item)) {
             // alors on lui interdit de recevoir le focus
             item.setAttribute('tabindex', '-1');
-        }
+        } 
     });
 
     // donne le focus au bouton de fermeture de la modale
@@ -38,6 +40,7 @@ function displayModal() {
 
 
 function trapTabKey(e) {
+
     // définit la touche Tab
     let isTabPressed = e.key === 'Tab';
 
@@ -67,7 +70,7 @@ function trapTabKey(e) {
 
 // fermeture modal
 function closeModal() {
-    const focusableElements = document.querySelectorAll('button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const focusableElements = document.querySelectorAll('button, .close_btn, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), div.menuButton, div.floating-box, li[role="listitem"]');
 
     contact_modal.style.display = "none";
 
@@ -78,7 +81,7 @@ function closeModal() {
     });
     // ici on enlève l'écouteur d'événement
     document.removeEventListener('keydown', trapTabKey);
-    close_button.focus();
+    contact_button.focus();
 }
 
 
@@ -100,13 +103,14 @@ formElement.addEventListener("submit", (event) => {
     console.log(firstValue, lastValue, email, message);
     // j'indique que isSubmited est true
     isSubmited = true;
+    closeModal();
 });
 
 
 // fonction ternaire : si isSubmit est true, reset du formulaire et fermeture de la modal. 
 // si c'est false alors: null est renvoyé.
 function submitForm(){
-    isSubmited ? (formElement.reset(), closeModal()) : null;
+    isSubmited ? formElement.reset() : null;
 }
 
 
